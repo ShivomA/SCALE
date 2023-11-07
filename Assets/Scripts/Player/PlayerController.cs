@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+    public float damagePower = 5f;
+
     private float mass = 4.0f;
     private float moveForce = 1.0f;
     private float jumpForce = 10.0f;
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour {
     public float maxJumpForce = 25.0f;
     public float minMaxJumpTime = 0.3f;
     public float maxMaxJumpTime = 0.5f;
+    public float minDamagePower = 1.0f;
+    public float maxDamagePower = 10.0f;
     public float minMaxMomentum = 5.0f;
     public float maxMaxMomentum = 30.0f;
     public float minplayerRadius = 0.35f;
@@ -43,6 +47,20 @@ public class PlayerController : MonoBehaviour {
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
+
+        float newSize = transform.localScale.x;
+
+        mass = minMass + (newSize - minSize) * (maxMass - minMass) / (maxSize - minSize);
+        moveForce = minMoveForce + (newSize - minSize) * (maxMoveForce - minMoveForce) / (maxSize - minSize);
+        jumpForce = minJumpForce + (newSize - minSize) * (maxJumpForce - minJumpForce) / (maxSize - minSize);
+        maxJumpTime = maxMaxJumpTime + (newSize - minSize) * (minMaxJumpTime - maxMaxJumpTime) / (maxSize - minSize);
+        damagePower = minDamagePower + (newSize - minSize) * (maxDamagePower - minDamagePower) / (maxSize - minSize);
+        maxMomentum = minMaxMomentum + (newSize - minSize) * (maxMaxMomentum - minMaxMomentum) / (maxSize - minSize);
+        playerRadius = minplayerRadius + (newSize - minSize) * (maxplayerRadius - minplayerRadius) / (maxSize - minSize);
+        decelerationRate = minDecelerationRate + (newSize - minSize) * (maxDecelerationRate - minDecelerationRate) / (maxSize - minSize);
+
+        transform.localScale = new Vector3(newSize, newSize, 1);
+        rb.mass = mass;
     }
 
     private void Update() {
@@ -72,6 +90,43 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Jump() {
+        if (Input.GetButtonDown("Jump") && isGrounded && !isJumping) {
+            isJumping = true;
+            jumpTime = 0.0f;
+
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            jumpTime += Time.deltaTime;
+            isGrounded = false;
+        } else if (Input.GetButton("Jump") && isJumping && jumpTime < maxJumpTime) {
+            rb.AddForce(decreasedJumpFactor * jumpForce * Vector2.up);
+            jumpTime += Time.deltaTime;
+        }
+    }
+
+    private void ChangeSize() {
+        float sizeInput = Input.GetAxis("Vertical") * sizeChangeSpeed;
+
+        if (sizeInput != 0) {
+            if (sizeInput < 0 || !Physics2D.Raycast(transform.position, Vector2.up, playerRadius, groundLayer)) {
+                float newSize = Mathf.Clamp(transform.localScale.x + sizeInput * Time.deltaTime, minSize, maxSize);
+
+                mass = minMass + (newSize - minSize) * (maxMass - minMass) / (maxSize - minSize);
+                moveForce = minMoveForce + (newSize - minSize) * (maxMoveForce - minMoveForce) / (maxSize - minSize);
+                jumpForce = minJumpForce + (newSize - minSize) * (maxJumpForce - minJumpForce) / (maxSize - minSize);
+                maxJumpTime = maxMaxJumpTime + (newSize - minSize) * (minMaxJumpTime - maxMaxJumpTime) / (maxSize - minSize);
+                damagePower = minDamagePower + (newSize - minSize) * (maxDamagePower - minDamagePower) / (maxSize - minSize);
+                maxMomentum = minMaxMomentum + (newSize - minSize) * (maxMaxMomentum - minMaxMomentum) / (maxSize - minSize);
+                playerRadius = minplayerRadius + (newSize - minSize) * (maxplayerRadius - minplayerRadius) / (maxSize - minSize);
+                decelerationRate = minDecelerationRate + (newSize - minSize) * (maxDecelerationRate - minDecelerationRate) / (maxSize - minSize);
+
+                transform.localScale = new Vector3(newSize, newSize, 1);
+                rb.mass = mass;
+            }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
         float angleIncrement = groundCheckAngle / (groundCheckRayCount - 1);
         int i = 0;
 
@@ -91,38 +146,28 @@ public class PlayerController : MonoBehaviour {
             isJumping = true;
             isGrounded = false;
         }
-
-        if (Input.GetButtonDown("Jump") && isGrounded && !isJumping) {
-            isJumping = true;
-            jumpTime = 0.0f;
-
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            jumpTime += Time.deltaTime;
-            isGrounded = false;
-        } else if (Input.GetButton("Jump") && isJumping && jumpTime < maxJumpTime) {
-            rb.AddForce(decreasedJumpFactor * jumpForce * Vector2.up);
-            jumpTime += Time.deltaTime;
-        }
     }
 
-    private void ChangeSize() {
-        float sizeInput = Input.GetAxis("Vertical") * sizeChangeSpeed;
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        float angleIncrement = groundCheckAngle / (groundCheckRayCount - 1);
+        int i = 0;
 
-        if (sizeInput != 0) {
-            if (!Physics2D.Raycast(transform.position, Vector2.up, playerRadius, groundLayer)) {
-                float newSize = Mathf.Clamp(transform.localScale.x + sizeInput * Time.deltaTime, minSize, maxSize);
+        for (i = 0; i < groundCheckRayCount; i++) {
+            float angle = -groundCheckAngle / 2.0f + i * angleIncrement;
+            Vector2 direction = Quaternion.Euler(0, 0, angle) * Vector2.down;
 
-                mass = minMass + (newSize - minSize) * (maxMass - minMass) / (maxSize - minSize);
-                moveForce = minMoveForce + (newSize - minSize) * (maxMoveForce - minMoveForce) / (maxSize - minSize);
-                jumpForce = minJumpForce + (newSize - minSize) * (maxJumpForce - minJumpForce) / (maxSize - minSize);
-                maxJumpTime = maxMaxJumpTime + (newSize - minSize) * (minMaxJumpTime - maxMaxJumpTime) / (maxSize - minSize);
-                maxMomentum = minMaxMomentum + (newSize - minSize) * (maxMaxMomentum - minMaxMomentum) / (maxSize - minSize);
-                playerRadius = minplayerRadius + (newSize - minSize) * (maxplayerRadius - minplayerRadius) / (maxSize - minSize);
-                decelerationRate = minDecelerationRate + (newSize - minSize) * (maxDecelerationRate - minDecelerationRate) / (maxSize - minSize);
-
-                transform.localScale = new Vector3(newSize, newSize, 1);
-                rb.mass = mass;
+            if (Physics2D.Raycast(transform.position, direction, playerRadius, groundLayer)) {
+                isGrounded = true;
+                isJumping = false;
+                jumpTime = 0.0f;
+                break;
             }
+        }
+
+        if (i == groundCheckRayCount) {
+            isJumping = true;
+            isGrounded = false;
         }
     }
 }
