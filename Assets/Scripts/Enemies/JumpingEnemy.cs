@@ -10,19 +10,19 @@ public class JumpingEnemy : MonoBehaviour {
     public float jumpCooldown = 1.2f;
     public float detectionRange = 8.0f;
     public float normalMaxSpeed = 1.5f;
-    public float normalMoveForce = 1.0f;
-    public float followingMaxSpeed = 2.0f;
+    public float normalMoveForce = 10.0f;
+    public float followingMaxSpeed = 4.0f;
     public float followingMoveForce = 0.5f;
     public float verticalDetectionRange = 10.0f;
 
-    public float leftBoundaryX;
-    public float rightBoundaryX;
+    public float leftBoundary;
+    public float rightBoundary;
     public float heightOffset = 1.5f;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
-    public float groundCheckAngle = 60.0f;
-    public float groundCheckRayCount = 13f;
+    public float groundCheckAngle = 30.0f;
+    public float groundCheckRayCount = 7f;
 
     private float steadyTime;
     private int currentHealth;
@@ -33,7 +33,6 @@ public class JumpingEnemy : MonoBehaviour {
 
     private Rigidbody2D rb;
 
-    private bool sawPlayer = false;
     private bool movingRight = true;
 
     public Transform playerTransform;
@@ -50,61 +49,70 @@ public class JumpingEnemy : MonoBehaviour {
         enemySpriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = enemySpriteRenderer.color;
 
-        if (leftBoundaryX == 0 || rightBoundaryX == 0) {
-            leftBoundaryX = transform.position.x - 15;
-            rightBoundaryX = transform.position.x + 15;
+        if (leftBoundary == rightBoundary) {
+            leftBoundary = transform.position.x - 15;
+            rightBoundary = transform.position.x + 15;
         }
     }
 
     private void Update() {
-        MovementLogic();
         DamageVisual();
     }
 
+    private void FixedUpdate() {
+        MovementLogic();
+    }
+
     private void MovementLogic() {
-        if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
-            Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
-            sawPlayer = true;
-        } else { sawPlayer = false; }
+        bool outOfBoundary = false;
+
+        if (transform.position.x < leftBoundary) {
+            rb.AddForce(Vector2.right * normalMoveForce);
+            Flip();
+            outOfBoundary = true;
+        } else if (transform.position.x > rightBoundary) {
+            rb.AddForce(Vector2.left * normalMoveForce);
+            Flip();
+            outOfBoundary = true;
+        }
 
         if (steadyTime <= jumpCooldown && isGrounded) {
             steadyTime += Time.deltaTime;
         }
 
-        if (sawPlayer) {
-            if (transform.position.x >= leftBoundaryX && transform.position.x <= rightBoundaryX) {
+        if (!outOfBoundary) {
+            bool sawPlayer;
+
+            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
+                Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
+                sawPlayer = true;
+            } else { sawPlayer = false; }
+
+            if (sawPlayer) {
                 if (steadyTime >= jumpCooldown && isGrounded) {
                     if (playerTransform.position.y >= transform.position.y - heightOffset) {
-
-                    float xForce = followingMoveForce * (playerTransform.position.x - transform.position.x);
-                    rb.AddForce(new Vector2(xForce, jumpForce), ForceMode2D.Impulse);
+                        float xForce = followingMoveForce * (playerTransform.position.x - transform.position.x);
+                        rb.AddForce(new Vector2(xForce, jumpForce), ForceMode2D.Impulse);
                     }
 
                     steadyTime = 0;
                     isGrounded = false;
-                }
-            }
-
-            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
-        } else {
-            if (movingRight) {
-                rb.AddForce(new Vector2(normalMoveForce, 0));
-                if (transform.position.x >= rightBoundaryX) {
-                    Flip();
+                    rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
                 }
             } else {
-                rb.AddForce(new Vector2(-normalMoveForce, 0));
-                if (transform.position.x <= leftBoundaryX) {
-                    Flip();
+                if (movingRight) {
+                    rb.AddForce(Vector2.right * normalMoveForce);
+                    if (transform.position.x >= rightBoundary) {
+                        Flip();
+                    }
+                } else {
+                    rb.AddForce(Vector2.left * normalMoveForce);
+                    if (transform.position.x <= leftBoundary) {
+                        Flip();
+                    }
                 }
+                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
             }
-            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
-        }
-
-        if (transform.position.x < leftBoundaryX) {
-            rb.AddForce(new Vector2(normalMoveForce, 0));
-        } else if (transform.position.x > rightBoundaryX) {
-            rb.AddForce(new Vector2(-normalMoveForce, 0));
         }
     }
 
@@ -150,7 +158,13 @@ public class JumpingEnemy : MonoBehaviour {
 
         if (collision.gameObject.CompareTag("Player")) {
             if (collision.gameObject.TryGetComponent(out Player player)) {
+                Transform playerTransform = collision.gameObject.transform;
+                Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+
+                Vector2 forceDirection = (playerTransform.position - transform.position).normalized * playerController.mass;
+                playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
+
                 if (ShouldTakeDamage(playerController)) {
                     TakeDamage((int)playerController.damagePower);
                     damageVisualEffectImpactTime = damageVisualEffectTime;

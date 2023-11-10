@@ -6,10 +6,10 @@ public class RoamingEnemy : MonoBehaviour {
     public int maxHealth = 20;
     public float radius = 0.6f;
     public float maxSpeed = 1.0f;
-    public float moveForce = 2.0f;
+    public float moveForce = 5.0f;
 
-    public float leftBoundaryX;
-    public float rightBoundaryX;
+    public float leftBoundary;
+    public float rightBoundary;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
@@ -30,26 +30,29 @@ public class RoamingEnemy : MonoBehaviour {
         enemySpriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = enemySpriteRenderer.color;
 
-        if (leftBoundaryX == 0 || rightBoundaryX == 0) {
-            leftBoundaryX = transform.position.x - 10;
-            rightBoundaryX = transform.position.x + 10;
+        if (leftBoundary == rightBoundary) {
+            leftBoundary = transform.position.x - 10;
+            rightBoundary = transform.position.x + 10;
         }
     }
 
     private void Update() {
-        MovementLogic();
         DamageVisual();
+    }
+
+    private void FixedUpdate() {
+        MovementLogic();
     }
 
     private void MovementLogic() {
         if (movingRight) {
-            rb.AddForce(new Vector2(moveForce, 0));
-            if (transform.position.x >= rightBoundaryX) {
+            rb.AddForce(Vector2.right * moveForce);
+            if (transform.position.x >= rightBoundary) {
                 Flip();
             }
         } else {
-            rb.AddForce(new Vector2(-moveForce, 0));
-            if (transform.position.x <= leftBoundaryX) {
+            rb.AddForce(Vector2.left * moveForce);
+            if (transform.position.x <= leftBoundary) {
                 Flip();
             }
         }
@@ -80,7 +83,13 @@ public class RoamingEnemy : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.CompareTag("Player")) {
             if (collision.gameObject.TryGetComponent(out Player player)) {
+                Transform playerTransform = collision.gameObject.transform;
+                Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+
+                Vector2 forceDirection = (playerTransform.position - transform.position).normalized * playerController.mass;
+                playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
+
                 if (ShouldTakeDamage(playerController)) {
                     TakeDamage((int)playerController.damagePower);
                     damageVisualEffectImpactTime = damageVisualEffectTime;

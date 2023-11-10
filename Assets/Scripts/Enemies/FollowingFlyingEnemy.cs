@@ -1,20 +1,24 @@
-
 using UnityEngine;
 
-public class FollowingEnemy : MonoBehaviour {
+public class FollowingFlyingEnemy : MonoBehaviour {
     public int damage = 10;
     public int strength = 4;
     public int maxHealth = 30;
     public float radius = 0.6f;
     public float detectionRange = 8f;
-    public float normalMaxSpeed = 1.0f;
-    public float normalMoveForce = 4.0f;
-    public float followingMaxSpeed = 3.0f;
-    public float followingMoveForce = 6.0f;
-    public float verticalDetectionRange = 2.5f;
+    public float normalMaxSpeedX = 2.0f;
+    public float normalMaxSpeedY = 1.0f;
+    public float normalMoveForceX = 1.0f;
+    public float normalMoveForceY = 30.0f;
+    public float followingMaxSpeedX = 4.0f;
+    public float followingMaxSpeedY = 2.0f;
+    public float followingMoveForceX = 2.0f;
+    public float followingMoveForceY = 60.0f;
 
+    public float topBoundary;
     public float leftBoundary;
     public float rightBoundary;
+    public float bottomBoundary;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
@@ -44,6 +48,11 @@ public class FollowingEnemy : MonoBehaviour {
             leftBoundary = transform.position.x - 15;
             rightBoundary = transform.position.x + 15;
         }
+
+        if (topBoundary == bottomBoundary) {
+            topBoundary = transform.position.y + 4;
+            bottomBoundary = transform.position.y - 5;
+        }
     }
 
     private void Update() {
@@ -58,39 +67,51 @@ public class FollowingEnemy : MonoBehaviour {
         bool outOfBoundary = false;
 
         if (transform.position.x < leftBoundary) {
-            rb.AddForce(Vector2.right * normalMoveForce);
+            rb.AddForce(Vector2.right * normalMoveForceX);
             Flip();
             outOfBoundary = true;
         } else if (transform.position.x > rightBoundary) {
-            rb.AddForce(Vector2.left * normalMoveForce);
+            rb.AddForce(Vector2.left * normalMoveForceX);
             Flip();
+            outOfBoundary = true;
+        }
+        if (transform.position.y > topBoundary) {
+            rb.AddForce(Vector2.down * normalMoveForceY);
+            outOfBoundary = true;
+        } else if (transform.position.y < bottomBoundary) {
+            rb.AddForce(Vector2.up * normalMoveForceY);
             outOfBoundary = true;
         }
 
         if (!outOfBoundary) {
             bool sawPlayer;
 
-            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
-                Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
+            if ((playerTransform.position - transform.position).magnitude < detectionRange) {
                 sawPlayer = true;
             } else { sawPlayer = false; }
 
             if (sawPlayer) {
-                rb.AddForce(followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right);
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
+                Vector2 forceDirection = (playerTransform.position - transform.position).normalized;
+                rb.AddForce(new Vector2(forceDirection.x * followingMoveForceX, forceDirection.y * followingMoveForceY));
+                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
+                    Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
             } else {
+                float yForce = (Mathf.PingPong(Time.time, 1.0f) - 0.5f) * normalMoveForceY;
+
                 if (movingRight) {
-                    rb.AddForce(Vector2.right * normalMoveForce);
+                    rb.AddForce(new Vector2(normalMoveForceX, yForce));
                     if (transform.position.x >= rightBoundary) {
                         Flip();
                     }
                 } else {
-                    rb.AddForce(Vector2.left * normalMoveForce);
+                    rb.AddForce(new Vector2(-normalMoveForceX, yForce));
                     if (transform.position.x <= leftBoundary) {
                         Flip();
                     }
                 }
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
+
+                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeedX, normalMaxSpeedX),
+                    Mathf.Clamp(rb.velocity.y, -normalMaxSpeedY, normalMaxSpeedY));
             }
         }
     }

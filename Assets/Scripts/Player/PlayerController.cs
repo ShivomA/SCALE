@@ -3,7 +3,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
     public float damagePower = 5f;
 
-    private float mass = 4.0f;
+    public float mass = 4.0f;
+    private float size = 4.0f;
     private float moveForce = 1.0f;
     private float jumpForce = 10.0f;
     private float maxJumpTime = 0.5f;
@@ -11,10 +12,14 @@ public class PlayerController : MonoBehaviour {
     private float playerRadius = 0.9f;
     private float decelerationRate = 5.0f;
 
-    public float sizeChangeSpeed = 1.0f;
+    private float sizeScale = 5.0f;
+    private float sizeScaleMin = 1.0f;
+    private float sizeScaleMax = 10.0f;
+
+    public float sizeChangeSpeed = 10.0f;
     public float groundCheckAngle = 60.0f;
     public float groundCheckRayCount = 13f;
-    public float decreasedJumpFactor = 0.5f;
+    public float continuousJumpFactor = 2f;
     public float momentumDecreaseFactor = 0.8f;
 
     public float minSize = 0.2f;
@@ -44,34 +49,36 @@ public class PlayerController : MonoBehaviour {
 
     private float jumpTime = 0.0f;
     private float moveInput = 0.0f;
+    private bool continuousJumpInput = false;
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
 
-        float newSize = transform.localScale.x;
+        size = minSize + (sizeScale - sizeScaleMin) * (maxSize - minSize) / (sizeScaleMax - sizeScaleMin);
+        mass = minMass + (sizeScale - sizeScaleMin) * (maxMass - minMass) / (sizeScaleMax - sizeScaleMin);
+        moveForce = minMoveForce + (sizeScale - sizeScaleMin) * (maxMoveForce - minMoveForce) / (sizeScaleMax - sizeScaleMin);
+        jumpForce = minJumpForce + (sizeScale - sizeScaleMin) * (maxJumpForce - minJumpForce) / (sizeScaleMax - sizeScaleMin);
+        maxJumpTime = maxMaxJumpTime + (sizeScale - sizeScaleMin) * (minMaxJumpTime - maxMaxJumpTime) / (sizeScaleMax - sizeScaleMin);
+        damagePower = minDamagePower + (sizeScale - sizeScaleMin) * (maxDamagePower - minDamagePower) / (sizeScaleMax - sizeScaleMin);
+        maxMomentum = minMaxMomentum + (sizeScale - sizeScaleMin) * (maxMaxMomentum - minMaxMomentum) / (sizeScaleMax - sizeScaleMin);
+        playerRadius = minplayerRadius + (sizeScale - sizeScaleMin) * (maxplayerRadius - minplayerRadius) / (sizeScaleMax - sizeScaleMin);
+        decelerationRate = minDecelerationRate + (sizeScale - sizeScaleMin) * (maxDecelerationRate - minDecelerationRate) / (sizeScaleMax - sizeScaleMin);
 
-        mass = minMass + (newSize - minSize) * (maxMass - minMass) / (maxSize - minSize);
-        moveForce = minMoveForce + (newSize - minSize) * (maxMoveForce - minMoveForce) / (maxSize - minSize);
-        jumpForce = minJumpForce + (newSize - minSize) * (maxJumpForce - minJumpForce) / (maxSize - minSize);
-        maxJumpTime = maxMaxJumpTime + (newSize - minSize) * (minMaxJumpTime - maxMaxJumpTime) / (maxSize - minSize);
-        damagePower = minDamagePower + (newSize - minSize) * (maxDamagePower - minDamagePower) / (maxSize - minSize);
-        maxMomentum = minMaxMomentum + (newSize - minSize) * (maxMaxMomentum - minMaxMomentum) / (maxSize - minSize);
-        playerRadius = minplayerRadius + (newSize - minSize) * (maxplayerRadius - minplayerRadius) / (maxSize - minSize);
-        decelerationRate = minDecelerationRate + (newSize - minSize) * (maxDecelerationRate - minDecelerationRate) / (maxSize - minSize);
-
-        transform.localScale = new Vector3(newSize, newSize, 1);
+        transform.localScale = new Vector3(size, size, 1);
         rb.mass = mass;
     }
 
     private void Update() {
         moveInput = Input.GetAxis("Horizontal");
+        continuousJumpInput = Input.GetButton("Jump");
 
-        Jump();
         ChangeSize();
+        InitialJump();
     }
 
     private void FixedUpdate() {
         Move();
+        ContinuousJump();
     }
 
     private void Move() {
@@ -85,20 +92,26 @@ public class PlayerController : MonoBehaviour {
 
         if (moveInput == 0 || moveInput * rb.velocity.x < 0) {
             float decelerationForceX = -rb.velocity.x * decelerationRate;
-            rb.AddForce(new Vector2(decelerationForceX, 0));
+            rb.AddForce(Vector2.right * decelerationForceX);
         }
     }
 
-    private void Jump() {
-        if (Input.GetButtonDown("Jump") && isGrounded && !isJumping) {
+    private void InitialJump() {
+        bool jumpInput = Input.GetButtonDown("Jump");
+
+        if (jumpInput && isGrounded && !isJumping) {
             isJumping = true;
             jumpTime = 0.0f;
 
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             jumpTime += Time.deltaTime;
             isGrounded = false;
-        } else if (Input.GetButton("Jump") && isJumping && jumpTime < maxJumpTime) {
-            rb.AddForce(decreasedJumpFactor * jumpForce * Vector2.up);
+        }
+    }
+
+    private void ContinuousJump() {
+        if (continuousJumpInput && isJumping && jumpTime < maxJumpTime) {
+            rb.AddForce(continuousJumpFactor * jumpForce * Vector2.up);
             jumpTime += Time.deltaTime;
         }
     }
@@ -106,27 +119,27 @@ public class PlayerController : MonoBehaviour {
     private void ChangeSize() {
         float sizeInput = Input.GetAxis("Vertical") * sizeChangeSpeed;
 
-        if (sizeInput != 0) {
+        if (Mathf.Abs(sizeInput) >= 0.3) {
             if (sizeInput < 0 || !Physics2D.Raycast(transform.position, Vector2.up, playerRadius, groundLayer)) {
-                float newSize = Mathf.Clamp(transform.localScale.x + sizeInput * Time.deltaTime, minSize, maxSize);
+                sizeScale = Mathf.Clamp(sizeScale + sizeInput * Time.deltaTime, sizeScaleMin, sizeScaleMax);
 
-                mass = minMass + (newSize - minSize) * (maxMass - minMass) / (maxSize - minSize);
-                moveForce = minMoveForce + (newSize - minSize) * (maxMoveForce - minMoveForce) / (maxSize - minSize);
-                jumpForce = minJumpForce + (newSize - minSize) * (maxJumpForce - minJumpForce) / (maxSize - minSize);
-                maxJumpTime = maxMaxJumpTime + (newSize - minSize) * (minMaxJumpTime - maxMaxJumpTime) / (maxSize - minSize);
-                damagePower = minDamagePower + (newSize - minSize) * (maxDamagePower - minDamagePower) / (maxSize - minSize);
-                maxMomentum = minMaxMomentum + (newSize - minSize) * (maxMaxMomentum - minMaxMomentum) / (maxSize - minSize);
-                playerRadius = minplayerRadius + (newSize - minSize) * (maxplayerRadius - minplayerRadius) / (maxSize - minSize);
-                decelerationRate = minDecelerationRate + (newSize - minSize) * (maxDecelerationRate - minDecelerationRate) / (maxSize - minSize);
+                size = minSize + (sizeScale - sizeScaleMin) * (maxSize - minSize) / (sizeScaleMax - sizeScaleMin);
+                mass = minMass + (sizeScale - sizeScaleMin) * (maxMass - minMass) / (sizeScaleMax - sizeScaleMin);
+                moveForce = minMoveForce + (sizeScale - sizeScaleMin) * (maxMoveForce - minMoveForce) / (sizeScaleMax - sizeScaleMin);
+                jumpForce = minJumpForce + (sizeScale - sizeScaleMin) * (maxJumpForce - minJumpForce) / (sizeScaleMax - sizeScaleMin);
+                maxJumpTime = maxMaxJumpTime + (sizeScale - sizeScaleMin) * (minMaxJumpTime - maxMaxJumpTime) / (sizeScaleMax - sizeScaleMin);
+                damagePower = minDamagePower + (sizeScale - sizeScaleMin) * (maxDamagePower - minDamagePower) / (sizeScaleMax - sizeScaleMin);
+                maxMomentum = minMaxMomentum + (sizeScale - sizeScaleMin) * (maxMaxMomentum - minMaxMomentum) / (sizeScaleMax - sizeScaleMin);
+                playerRadius = minplayerRadius + (sizeScale - sizeScaleMin) * (maxplayerRadius - minplayerRadius) / (sizeScaleMax - sizeScaleMin);
+                decelerationRate = minDecelerationRate + (sizeScale - sizeScaleMin) * (maxDecelerationRate - minDecelerationRate) / (sizeScaleMax - sizeScaleMin);
 
-                transform.localScale = new Vector3(newSize, newSize, 1);
+                transform.localScale = new Vector3(size, size, 1);
                 rb.mass = mass;
             }
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
+    private void OnCollisionEnter2D(Collision2D collision) {
         float angleIncrement = groundCheckAngle / (groundCheckRayCount - 1);
         int i = 0;
 
@@ -148,8 +161,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
+    private void OnCollisionExit2D(Collision2D collision) {
         float angleIncrement = groundCheckAngle / (groundCheckRayCount - 1);
         int i = 0;
 

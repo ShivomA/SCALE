@@ -185,12 +185,12 @@ MonoBehaviour:
   jumpCooldown: 1.2
   detectionRange: 8
   normalMaxSpeed: 1.5
-  normalMoveForce: 1
-  followingMaxSpeed: 2
+  normalMoveForce: 10
+  followingMaxSpeed: 4
   followingMoveForce: 0.5
   verticalDetectionRange: 10
-  leftBoundaryX: 0
-  rightBoundaryX: 0
+  leftBoundary: 0
+  rightBoundary: 0
   heightOffset: 1.5
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   damageVisualEffectTime: 2

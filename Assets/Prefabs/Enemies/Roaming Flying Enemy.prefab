@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1588233300484587232
+--- !u!1 &7790308171659270006
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2914575081568026754}
-  - component: {fileID: 8797679498402787384}
-  - component: {fileID: 8895691216949383867}
-  - component: {fileID: 1014165229092450605}
-  - component: {fileID: 7696057174478419345}
-  - component: {fileID: 1237232862670569834}
-  m_Layer: 3
-  m_Name: Player
-  m_TagString: Player
+  - component: {fileID: 378959060606305022}
+  - component: {fileID: 8552218801600386420}
+  - component: {fileID: 2968267639334739291}
+  - component: {fileID: 782934623212575678}
+  - component: {fileID: 6944111638086489771}
+  m_Layer: 9
+  m_Name: Roaming Flying Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2914575081568026754
+--- !u!4 &378959060606305022
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588233300484587232}
+  m_GameObject: {fileID: 7790308171659270006}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 129.5, y: -1.5, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &8797679498402787384
+--- !u!212 &8552218801600386420
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588233300484587232}
+  m_GameObject: {fileID: 7790308171659270006}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -77,24 +76,24 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: be5bb752b67de4b48a53cf2d9bf19365, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: -2135585597343286014, guid: 5aa8b770bc43046bc8d993d0d5b7f4a5, type: 3}
+  m_Color: {r: 0.23740657, g: 0.9150943, b: 0.5389517, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.8828125, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &8895691216949383867
-CircleCollider2D:
+--- !u!60 &2968267639334739291
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588233300484587232}
+  m_GameObject: {fileID: 7790308171659270006}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -121,24 +120,40 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1.7
---- !u!50 &1014165229092450605
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.8828125, y: 1}
+    newSize: {x: 0.8828125, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.43359375, y: 0.25}
+      - {x: -0.43359375, y: -0.25}
+      - {x: 0, y: -0.5}
+      - {x: 0.43359375, y: -0.25}
+      - {x: 0.43359375, y: 0.25}
+      - {x: 0, y: 0.5}
+  m_UseDelaunayMesh: 0
+--- !u!50 &782934623212575678
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588233300484587232}
+  m_GameObject: {fileID: 7790308171659270006}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 4
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -150,61 +165,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &7696057174478419345
+--- !u!114 &6944111638086489771
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588233300484587232}
+  m_GameObject: {fileID: 7790308171659270006}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efd2d763a49c94491884b4323226a005, type: 3}
+  m_Script: {fileID: 11500000, guid: 66ed7d64d68d34a5fabec377c0998ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePower: 5
-  mass: 4
-  sizeChangeSpeed: 10
-  groundCheckAngle: 60
-  groundCheckRayCount: 13
-  continuousJumpFactor: 2
-  momentumDecreaseFactor: 0.8
-  minSize: 0.2
-  maxSize: 0.8
-  minMass: 0.5
-  maxMass: 4
-  minMoveForce: 3
-  maxMoveForce: 9
-  minJumpForce: 2
-  maxJumpForce: 25
-  minMaxJumpTime: 0.3
-  maxMaxJumpTime: 0.5
-  minDamagePower: 1
-  maxDamagePower: 10
-  minMaxMomentum: 5
-  maxMaxMomentum: 30
-  minplayerRadius: 0.35
-  maxplayerRadius: 1.4
-  minDecelerationRate: 2
-  maxDecelerationRate: 8
-  groundLayer:
+  damage: 8
+  strength: 2
+  maxHealth: 15
+  radius: 0.6
+  maxSpeedX: 1
+  maxSpeedY: 1
+  moveForce: 2
+  verticalMoveForce: 30
+  topBoundary: 0
+  leftBoundary: 0
+  rightBoundary: 0
+  bottomBoundary: 0
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  damageVisualEffectTime: 2
+  playerLayer:
     serializedVersion: 2
-    m_Bits: 704
---- !u!114 &1237232862670569834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588233300484587232}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b8877fa444b841d1907922364e7aef9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  damageCooldownTime: 2
-  damageCooldownEffectTime: 0.2
-  damageTakenForceX: 5
-  damageTakenForceY: 5
-  immuneColor: {r: 1, g: 0, b: 0, a: 1}
+    m_Bits: 8

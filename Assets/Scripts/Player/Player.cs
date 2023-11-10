@@ -5,6 +5,9 @@ public class Player : MonoBehaviour {
     public float damageCooldownTime = 2.0f;
     public float damageCooldownEffectTime = 0.2f;
 
+    public float damageTakenForceX = 5;
+    public float damageTakenForceY = 5;
+
     public Color immuneColor = Color.red;
 
     private Color originalColor;

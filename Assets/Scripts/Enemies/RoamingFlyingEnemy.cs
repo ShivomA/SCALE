@@ -1,20 +1,18 @@
-
 using UnityEngine;
 
-public class FollowingEnemy : MonoBehaviour {
-    public int damage = 10;
-    public int strength = 4;
-    public int maxHealth = 30;
+public class RoamingFlyingEnemy : MonoBehaviour {
+    public int damage = 8;
+    public int strength = 2;
+    public int maxHealth = 15;
     public float radius = 0.6f;
-    public float detectionRange = 8f;
-    public float normalMaxSpeed = 1.0f;
-    public float normalMoveForce = 4.0f;
-    public float followingMaxSpeed = 3.0f;
-    public float followingMoveForce = 6.0f;
-    public float verticalDetectionRange = 2.5f;
+    public float maxSpeed = 1.0f;
+    public float moveForce = 2.0f;
+    public float verticalMoveForce = 30.0f;
 
+    public float topBoundary;
     public float leftBoundary;
     public float rightBoundary;
+    public float bottomBoundary;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
@@ -24,16 +22,11 @@ public class FollowingEnemy : MonoBehaviour {
     private SpriteRenderer enemySpriteRenderer;
 
     private Rigidbody2D rb;
-
     private bool movingRight = true;
 
-    public Transform playerTransform;
     public LayerMask playerLayer;
 
     private void Start() {
-        if (playerTransform == null)
-            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
 
@@ -41,8 +34,13 @@ public class FollowingEnemy : MonoBehaviour {
         originalColor = enemySpriteRenderer.color;
 
         if (leftBoundary == rightBoundary) {
-            leftBoundary = transform.position.x - 15;
-            rightBoundary = transform.position.x + 15;
+            leftBoundary = transform.position.x - 7;
+            rightBoundary = transform.position.x + 7;
+        }
+
+        if (topBoundary == bottomBoundary) {
+            topBoundary = transform.position.y + 4;
+            bottomBoundary = transform.position.y - 4;
         }
     }
 
@@ -55,44 +53,26 @@ public class FollowingEnemy : MonoBehaviour {
     }
 
     private void MovementLogic() {
-        bool outOfBoundary = false;
+        float yForce = (Mathf.PingPong(Time.time, 1.0f) - 0.5f) * verticalMoveForce;
 
-        if (transform.position.x < leftBoundary) {
-            rb.AddForce(Vector2.right * normalMoveForce);
-            Flip();
-            outOfBoundary = true;
-        } else if (transform.position.x > rightBoundary) {
-            rb.AddForce(Vector2.left * normalMoveForce);
-            Flip();
-            outOfBoundary = true;
-        }
-
-        if (!outOfBoundary) {
-            bool sawPlayer;
-
-            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
-                Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
-                sawPlayer = true;
-            } else { sawPlayer = false; }
-
-            if (sawPlayer) {
-                rb.AddForce(followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right);
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
-            } else {
-                if (movingRight) {
-                    rb.AddForce(Vector2.right * normalMoveForce);
-                    if (transform.position.x >= rightBoundary) {
-                        Flip();
-                    }
-                } else {
-                    rb.AddForce(Vector2.left * normalMoveForce);
-                    if (transform.position.x <= leftBoundary) {
-                        Flip();
-                    }
-                }
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
+        if (movingRight) {
+            rb.AddForce(new Vector2(moveForce, yForce));
+            if (transform.position.x >= rightBoundary) {
+                Flip();
+            }
+        } else {
+            rb.AddForce(new Vector2(-moveForce, yForce));
+            if (transform.position.x <= leftBoundary) {
+                Flip();
             }
         }
+
+        if (transform.position.y > topBoundary)
+            rb.AddForce(Vector2.down * verticalMoveForce);
+        else if (transform.position.y < bottomBoundary)
+            rb.AddForce(Vector2.up * verticalMoveForce);
+
+        rb.velocity = new Vector2(rb.velocity.x,rb.velocity.y).normalized * maxSpeed;
     }
 
     private void Flip() {

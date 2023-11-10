@@ -24,7 +24,7 @@ public class BackgroundMovementController : MonoBehaviour {
         }
     }
 
-    void Update() {
+    void LateUpdate() {
         for (int i = 0; i < Layer_Objects.Length; i++) {
             float temp = _camera.position.x * (1 - Layer_Speed[i]);
             float distance = _camera.position.x * Layer_Speed[i];
