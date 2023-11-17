@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
     public float maxHealth = 100;
+    public float damagePower = 5f;
     public float minMaxHealth = 40;
     public float maxMaxHealth = 100;
+    public float minDamagePower = 4.0f;
+    public float maxDamagePower = 8.0f;
     public float damageCooldownTime = 2.0f;
     public float damageCooldownEffectTime = 0.2f;
 
@@ -66,6 +69,20 @@ public class Player : MonoBehaviour {
         healthText.text = (int)health + "/" + (int)maxHealth;
     }
 
+    public void UpdateDamagePower(float sizeScale, float sizeScaleMin, float sizeScaleMax) {
+        damagePower = minDamagePower + (sizeScale - sizeScaleMin) * (maxDamagePower - minDamagePower) / (sizeScaleMax - sizeScaleMin);
+    }
+
+    public void GainHealth(int healthPoints) {
+        health += healthPoints;
+        health = Mathf.Min(health, maxHealth);
+
+        currentMinHealth = health * minMaxHealth / maxHealth;
+        currentMaxHealth = health * maxMaxHealth / maxHealth;
+
+        healthText.text = (int)health + "/" + (int)maxHealth;
+    }
+
     public void TakeDamage(int damage) {
         if (canTakeDamage) {
             health -= damage;
@@ -73,9 +90,6 @@ public class Player : MonoBehaviour {
 
             currentMinHealth = health * minMaxHealth / maxHealth;
             currentMaxHealth = health * maxMaxHealth / maxHealth;
-
-            Debug.Log("Damage taken: " + damage);
-            Debug.Log("Player health is: " + health);
 
             healthText.text = (int)health + "/" + (int)maxHealth;
 

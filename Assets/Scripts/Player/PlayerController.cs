@@ -1,8 +1,6 @@
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-    public float damagePower = 5f;
-
     public float mass = 4.0f;
     private float size = 4.0f;
     private float moveForce = 1.0f;
@@ -32,8 +30,6 @@ public class PlayerController : MonoBehaviour {
     public float maxJumpForce = 25.0f;
     public float minMaxJumpTime = 0.3f;
     public float maxMaxJumpTime = 0.5f;
-    public float minDamagePower = 1.0f;
-    public float maxDamagePower = 10.0f;
     public float minMaxMomentum = 5.0f;
     public float maxMaxMomentum = 30.0f;
     public float minplayerRadius = 0.35f;
@@ -57,13 +53,13 @@ public class PlayerController : MonoBehaviour {
         player = GetComponent<Player>();
 
         player.UpdateHealth(sizeScale, sizeScaleMin, sizeScaleMax);
+        player.UpdateDamagePower(sizeScale, sizeScaleMin, sizeScaleMax);
 
         size = minSize + (sizeScale - sizeScaleMin) * (maxSize - minSize) / (sizeScaleMax - sizeScaleMin);
         mass = minMass + (sizeScale - sizeScaleMin) * (maxMass - minMass) / (sizeScaleMax - sizeScaleMin);
         moveForce = minMoveForce + (sizeScale - sizeScaleMin) * (maxMoveForce - minMoveForce) / (sizeScaleMax - sizeScaleMin);
         jumpForce = minJumpForce + (sizeScale - sizeScaleMin) * (maxJumpForce - minJumpForce) / (sizeScaleMax - sizeScaleMin);
         maxJumpTime = maxMaxJumpTime + (sizeScale - sizeScaleMin) * (minMaxJumpTime - maxMaxJumpTime) / (sizeScaleMax - sizeScaleMin);
-        damagePower = minDamagePower + (sizeScale - sizeScaleMin) * (maxDamagePower - minDamagePower) / (sizeScaleMax - sizeScaleMin);
         maxMomentum = minMaxMomentum + (sizeScale - sizeScaleMin) * (maxMaxMomentum - minMaxMomentum) / (sizeScaleMax - sizeScaleMin);
         playerRadius = minplayerRadius + (sizeScale - sizeScaleMin) * (maxplayerRadius - minplayerRadius) / (sizeScaleMax - sizeScaleMin);
         decelerationRate = minDecelerationRate + (sizeScale - sizeScaleMin) * (maxDecelerationRate - minDecelerationRate) / (sizeScaleMax - sizeScaleMin);
@@ -128,13 +124,13 @@ public class PlayerController : MonoBehaviour {
                 sizeScale = Mathf.Clamp(sizeScale + sizeInput * Time.deltaTime, sizeScaleMin, sizeScaleMax);
 
                 player.UpdateHealth(sizeScale, sizeScaleMin, sizeScaleMax);
+                player.UpdateDamagePower(sizeScale, sizeScaleMin, sizeScaleMax);
 
                 size = minSize + (sizeScale - sizeScaleMin) * (maxSize - minSize) / (sizeScaleMax - sizeScaleMin);
                 mass = minMass + (sizeScale - sizeScaleMin) * (maxMass - minMass) / (sizeScaleMax - sizeScaleMin);
                 moveForce = minMoveForce + (sizeScale - sizeScaleMin) * (maxMoveForce - minMoveForce) / (sizeScaleMax - sizeScaleMin);
                 jumpForce = minJumpForce + (sizeScale - sizeScaleMin) * (maxJumpForce - minJumpForce) / (sizeScaleMax - sizeScaleMin);
                 maxJumpTime = maxMaxJumpTime + (sizeScale - sizeScaleMin) * (minMaxJumpTime - maxMaxJumpTime) / (sizeScaleMax - sizeScaleMin);
-                damagePower = minDamagePower + (sizeScale - sizeScaleMin) * (maxDamagePower - minDamagePower) / (sizeScaleMax - sizeScaleMin);
                 maxMomentum = minMaxMomentum + (sizeScale - sizeScaleMin) * (maxMaxMomentum - minMaxMomentum) / (sizeScaleMax - sizeScaleMin);
                 playerRadius = minplayerRadius + (sizeScale - sizeScaleMin) * (maxplayerRadius - minplayerRadius) / (sizeScaleMax - sizeScaleMin);
                 decelerationRate = minDecelerationRate + (sizeScale - sizeScaleMin) * (maxDecelerationRate - minDecelerationRate) / (sizeScaleMax - sizeScaleMin);

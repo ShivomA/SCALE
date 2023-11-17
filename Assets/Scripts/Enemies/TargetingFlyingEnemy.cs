@@ -4,7 +4,6 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     public int damage = 10;
     public int strength = 0;
     public int maxHealth = 30;
-    public float radius = 0.6f;
     public float detectionRange = 15f;
     public float attackCooldown = 1.2f;
     public float attackDuration = 3.0f;
@@ -23,13 +22,19 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     public float rightBoundary;
     public float bottomBoundary;
     public Color damageColor = Color.red;
+    public int healthConversionFactor = 6;
     public float damageVisualEffectTime = 2.0f;
     public Color attackingColor = new(128, 0, 255);
+
+    private float enemyWidth;
+    private float enemyHeight;
+    private int collissionRayCount = 5;
 
     private float steadyTime;
     private int currentHealth;
     private Color originalColor;
     private bool isSteady = true;
+    private int numHitReceived = 0;
     private float damageVisualEffectImpactTime;
     private SpriteRenderer enemySpriteRenderer;
 
@@ -37,22 +42,29 @@ public class TargetingFlyingEnemy : MonoBehaviour {
 
     private bool movingRight = true;
 
+    public Player player;
     public Transform playerTransform;
     public LayerMask playerLayer;
 
     private void Start() {
+        if (player == null) 
+            player = FindObjectOfType<Player>();
+
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+
+        float sizeX = transform.localScale.x;
+        float sizeY = transform.localScale.y;
+        float boundSizeX = GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+        float boundSizeY = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
+        enemyWidth = sizeX * boundSizeX;
+        enemyHeight = sizeY * boundSizeY / 2 + 0.1f;
 
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
 
         enemySpriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = enemySpriteRenderer.color;
-
-        float sizeX = transform.localScale.x;
-        float boundSizeY = enemySpriteRenderer.sprite.bounds.size.y;
-        radius = sizeX * boundSizeY / 2 + 0.1f;
 
         if (leftBoundary == rightBoundary) {
             leftBoundary = transform.position.x - 15;
@@ -183,14 +195,15 @@ public class TargetingFlyingEnemy : MonoBehaviour {
                 Vector2 forceDirection = (playerTransform.position - transform.position).normalized * playerController.mass;
                 playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
 
-                if (ShouldTakeDamage(playerController)) {
+                if (ShouldTakeDamage(player)) {
                     steadyTime = 0;
                     isSteady = false;
                     CancelInvoke(nameof(MakeSteady));
                     Invoke(nameof(MakeSteady), damageTakenCooldown);
                     enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, 0);
 
-                    TakeDamage((int)playerController.damagePower);
+                    numHitReceived += 1;
+                    TakeDamage((int)player.damagePower);
                     damageVisualEffectImpactTime = damageVisualEffectTime;
                 } else {
                     player.TakeDamage(damage);
@@ -199,19 +212,28 @@ public class TargetingFlyingEnemy : MonoBehaviour {
         }
     }
 
-    private bool ShouldTakeDamage(PlayerController playerController) {
-        if (Physics2D.Raycast(transform.position, Vector2.up, radius, playerLayer)) {
-            if (playerController.damagePower >= strength) {
-                return true;
-            } else { return false; }
-        } else
-            return false;
+    private bool ShouldTakeDamage(Player player) {
+        float positionIncrement = enemyWidth / (collissionRayCount - 1);
+
+        for (int i = 1; i < collissionRayCount - 1; i++) {
+            float originPositionX = transform.position.x - enemyWidth / 2.0f + i * positionIncrement;
+            Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
+
+            if (Physics2D.Raycast(originPosition, Vector2.up, enemyHeight, playerLayer)) {
+                if (player.damagePower >= strength) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public void TakeDamage(int damage) {
         currentHealth -= damage;
 
         if (currentHealth <= 0) {
+            player.GainHealth(numHitReceived * healthConversionFactor);
             Die();
         }
     }

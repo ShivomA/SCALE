@@ -179,8 +179,8 @@ MonoBehaviour:
   maxJumpForce: 25
   minMaxJumpTime: 0.3
   maxMaxJumpTime: 0.5
-  minDamagePower: 1
-  maxDamagePower: 10
+  minDamagePower: 4
+  maxDamagePower: 8
   minMaxMomentum: 5
   maxMaxMomentum: 30
   minplayerRadius: 0.35
@@ -211,3 +211,4 @@ MonoBehaviour:
   damageTakenForceY: 5
   immuneColor: {r: 1, g: 0, b: 0, a: 1}
   healthText: {fileID: 0}
+  health: 0
