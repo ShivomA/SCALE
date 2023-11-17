@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 15
-  strength: 3
+  strength: 0
   maxHealth: 30
   radius: 1.2
   jumpForce: 10

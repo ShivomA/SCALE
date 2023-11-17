@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FollowingEnemy : MonoBehaviour {
     public int damage = 10;
-    public int strength = 4;
+    public int strength = 0;
     public int maxHealth = 30;
     public float radius = 0.6f;
     public float detectionRange = 8f;
@@ -40,6 +40,10 @@ public class FollowingEnemy : MonoBehaviour {
         enemySpriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = enemySpriteRenderer.color;
 
+        float sizeX = transform.localScale.x;
+        float boundSizeY = enemySpriteRenderer.sprite.bounds.size.y;
+        radius = sizeX * boundSizeY / 2 + 0.1f;
+
         if (leftBoundary == rightBoundary) {
             leftBoundary = transform.position.x - 15;
             rightBoundary = transform.position.x + 15;
@@ -55,30 +59,30 @@ public class FollowingEnemy : MonoBehaviour {
     }
 
     private void MovementLogic() {
-        bool outOfBoundary = false;
+        bool sawPlayer;
 
-        if (transform.position.x < leftBoundary) {
-            rb.AddForce(Vector2.right * normalMoveForce);
-            Flip();
-            outOfBoundary = true;
-        } else if (transform.position.x > rightBoundary) {
-            rb.AddForce(Vector2.left * normalMoveForce);
-            Flip();
-            outOfBoundary = true;
-        }
+        if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
+            Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
+            sawPlayer = true;
+        } else { sawPlayer = false; }
 
-        if (!outOfBoundary) {
-            bool sawPlayer;
+        if (sawPlayer) {
+            rb.AddForce(followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right);
+            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
+        } else {
+            bool outOfBoundary = false;
 
-            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
-                Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
-                sawPlayer = true;
-            } else { sawPlayer = false; }
+            if (transform.position.x < leftBoundary) {
+                rb.AddForce(Vector2.right * normalMoveForce);
+                Flip();
+                outOfBoundary = true;
+            } else if (transform.position.x > rightBoundary) {
+                rb.AddForce(Vector2.left * normalMoveForce);
+                Flip();
+                outOfBoundary = true;
+            }
 
-            if (sawPlayer) {
-                rb.AddForce(followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right);
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
-            } else {
+            if (!outOfBoundary) {
                 if (movingRight) {
                     rb.AddForce(Vector2.right * normalMoveForce);
                     if (transform.position.x >= rightBoundary) {
@@ -90,8 +94,8 @@ public class FollowingEnemy : MonoBehaviour {
                         Flip();
                     }
                 }
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
             }
+            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
         }
     }
 

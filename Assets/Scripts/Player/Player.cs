@@ -1,7 +1,10 @@
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-    public int maxHealth = 100;
+    public float maxHealth = 100;
+    public float minMaxHealth = 40;
+    public float maxMaxHealth = 100;
     public float damageCooldownTime = 2.0f;
     public float damageCooldownEffectTime = 0.2f;
 
@@ -10,17 +13,24 @@ public class Player : MonoBehaviour {
 
     public Color immuneColor = Color.red;
 
+    public TextMeshProUGUI healthText;
+
     private Color originalColor;
     private SpriteRenderer playerSpriteRenderer;
 
-    private int health;
+    [SerializeField] private float health;
     private bool canTakeDamage;
     private float damageCooldown;
+    private float currentMinHealth;
+    private float currentMaxHealth;
 
     private void Start() {
         health = maxHealth;
         canTakeDamage = true;
         damageCooldown = damageCooldownTime;
+
+        currentMinHealth = health * minMaxHealth / maxHealth;
+        currentMaxHealth = health * maxMaxHealth / maxHealth;
 
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = playerSpriteRenderer.color;
@@ -47,13 +57,27 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void UpdateHealth(float sizeScale, float sizeScaleMin, float sizeScaleMax) {
+        maxHealth = minMaxHealth + (sizeScale - sizeScaleMin) * (maxMaxHealth - minMaxHealth) / (sizeScaleMax - sizeScaleMin);
+        health = currentMinHealth + (sizeScale - sizeScaleMin) * (currentMaxHealth - currentMinHealth) / (sizeScaleMax - sizeScaleMin);
+
+        health = Mathf.Min(health, maxHealth);
+
+        healthText.text = (int)health + "/" + (int)maxHealth;
+    }
+
     public void TakeDamage(int damage) {
         if (canTakeDamage) {
             health -= damage;
             canTakeDamage = false;
 
+            currentMinHealth = health * minMaxHealth / maxHealth;
+            currentMaxHealth = health * maxMaxHealth / maxHealth;
+
             Debug.Log("Damage taken: " + damage);
             Debug.Log("Player health is: " + health);
+
+            healthText.text = (int)health + "/" + (int)maxHealth;
 
             if (health <= 0)
                 Die();

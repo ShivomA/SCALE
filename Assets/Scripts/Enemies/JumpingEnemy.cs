@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class JumpingEnemy : MonoBehaviour {
     public int damage = 15;
-    public int strength = 3;
+    public int strength = 0;
     public int maxHealth = 30;
     public float radius = 1.2f;
     public float jumpForce = 10.0f;
@@ -49,6 +49,10 @@ public class JumpingEnemy : MonoBehaviour {
         enemySpriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = enemySpriteRenderer.color;
 
+        float sizeX = transform.localScale.x;
+        float boundSizeY = enemySpriteRenderer.sprite.bounds.size.y;
+        radius = sizeX * boundSizeY / 2 + 0.1f;
+
         if (leftBoundary == rightBoundary) {
             leftBoundary = transform.position.x - 15;
             rightBoundary = transform.position.x + 15;
@@ -64,42 +68,42 @@ public class JumpingEnemy : MonoBehaviour {
     }
 
     private void MovementLogic() {
-        bool outOfBoundary = false;
-
-        if (transform.position.x < leftBoundary) {
-            rb.AddForce(Vector2.right * normalMoveForce);
-            Flip();
-            outOfBoundary = true;
-        } else if (transform.position.x > rightBoundary) {
-            rb.AddForce(Vector2.left * normalMoveForce);
-            Flip();
-            outOfBoundary = true;
-        }
-
         if (steadyTime <= jumpCooldown && isGrounded) {
             steadyTime += Time.deltaTime;
         }
 
-        if (!outOfBoundary) {
-            bool sawPlayer;
+        bool sawPlayer;
 
-            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
-                Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
-                sawPlayer = true;
-            } else { sawPlayer = false; }
+        if (Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
+            Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
+            sawPlayer = true;
+        } else { sawPlayer = false; }
 
-            if (sawPlayer) {
-                if (steadyTime >= jumpCooldown && isGrounded) {
-                    if (playerTransform.position.y >= transform.position.y - heightOffset) {
-                        float xForce = followingMoveForce * (playerTransform.position.x - transform.position.x);
-                        rb.AddForce(new Vector2(xForce, jumpForce), ForceMode2D.Impulse);
-                    }
-
-                    steadyTime = 0;
-                    isGrounded = false;
-                    rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
+        if (sawPlayer) {
+            if (steadyTime >= jumpCooldown && isGrounded) {
+                if (playerTransform.position.y >= transform.position.y - heightOffset) {
+                    float xForce = followingMoveForce * (playerTransform.position.x - transform.position.x);
+                    rb.AddForce(new Vector2(xForce, jumpForce), ForceMode2D.Impulse);
                 }
-            } else {
+
+                steadyTime = 0;
+                isGrounded = false;
+                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
+            }
+        } else {
+            bool outOfBoundary = false;
+
+            if (transform.position.x < leftBoundary) {
+                rb.AddForce(Vector2.right * normalMoveForce);
+                Flip();
+                outOfBoundary = true;
+            } else if (transform.position.x > rightBoundary) {
+                rb.AddForce(Vector2.left * normalMoveForce);
+                Flip();
+                outOfBoundary = true;
+            }
+
+            if (!outOfBoundary) {
                 if (movingRight) {
                     rb.AddForce(Vector2.right * normalMoveForce);
                     if (transform.position.x >= rightBoundary) {
@@ -111,8 +115,8 @@ public class JumpingEnemy : MonoBehaviour {
                         Flip();
                     }
                 }
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
             }
+            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeed, normalMaxSpeed), rb.velocity.y);
         }
     }
 

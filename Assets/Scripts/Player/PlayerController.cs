@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour {
 
     public LayerMask groundLayer;
 
+    private Player player;
     private Rigidbody2D rb;
     private bool isJumping = false;
     private bool isGrounded = false;
@@ -53,6 +54,9 @@ public class PlayerController : MonoBehaviour {
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
+        player = GetComponent<Player>();
+
+        player.UpdateHealth(sizeScale, sizeScaleMin, sizeScaleMax);
 
         size = minSize + (sizeScale - sizeScaleMin) * (maxSize - minSize) / (sizeScaleMax - sizeScaleMin);
         mass = minMass + (sizeScale - sizeScaleMin) * (maxMass - minMass) / (sizeScaleMax - sizeScaleMin);
@@ -122,6 +126,8 @@ public class PlayerController : MonoBehaviour {
         if (Mathf.Abs(sizeInput) >= 0.3) {
             if (sizeInput < 0 || !Physics2D.Raycast(transform.position, Vector2.up, playerRadius, groundLayer)) {
                 sizeScale = Mathf.Clamp(sizeScale + sizeInput * Time.deltaTime, sizeScaleMin, sizeScaleMax);
+
+                player.UpdateHealth(sizeScale, sizeScaleMin, sizeScaleMax);
 
                 size = minSize + (sizeScale - sizeScaleMin) * (maxSize - minSize) / (sizeScaleMax - sizeScaleMin);
                 mass = minMass + (sizeScale - sizeScaleMin) * (maxMass - minMass) / (sizeScaleMax - sizeScaleMin);

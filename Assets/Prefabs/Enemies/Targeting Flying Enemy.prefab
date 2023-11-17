@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
-  strength: 4
+  strength: 0
   maxHealth: 30
   radius: 0.6
   detectionRange: 15

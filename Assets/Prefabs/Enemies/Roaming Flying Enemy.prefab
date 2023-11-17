@@ -178,11 +178,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 8
-  strength: 2
+  strength: 0
   maxHealth: 15
   radius: 0.6
-  maxSpeedX: 1
-  maxSpeedY: 1
+  maxSpeed: 1
   moveForce: 2
   verticalMoveForce: 30
   topBoundary: 0

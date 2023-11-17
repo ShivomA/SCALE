@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RoamingEnemy : MonoBehaviour {
     public int damage = 10;
-    public int strength = 3;
+    public int strength = 0;
     public int maxHealth = 20;
     public float radius = 0.6f;
     public float maxSpeed = 1.0f;
@@ -29,6 +29,10 @@ public class RoamingEnemy : MonoBehaviour {
 
         enemySpriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = enemySpriteRenderer.color;
+
+        float sizeX = transform.localScale.x;
+        float boundSizeY = enemySpriteRenderer.sprite.bounds.size.y;
+        radius = sizeX * boundSizeY / 2 + 0.1f;
 
         if (leftBoundary == rightBoundary) {
             leftBoundary = transform.position.x - 10;
