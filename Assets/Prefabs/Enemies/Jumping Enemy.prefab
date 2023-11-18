@@ -180,6 +180,8 @@ MonoBehaviour:
   damage: 15
   strength: 0
   maxHealth: 30
+  destroyedHealthPoints: 5
+  destroyedHealthForceMagnitude: 5
   radius: 1.2
   jumpForce: 10
   jumpCooldown: 1.2
@@ -196,7 +198,9 @@ MonoBehaviour:
   damageVisualEffectTime: 2
   groundCheckAngle: 30
   groundCheckRayCount: 7
+  player: {fileID: 0}
   playerTransform: {fileID: 0}
+  collectableHealth: {fileID: 7763720707685568750, guid: c0ce2a38a69d74729a0ab98e4a1a462b, type: 3}
   playerLayer:
     serializedVersion: 2
     m_Bits: 8

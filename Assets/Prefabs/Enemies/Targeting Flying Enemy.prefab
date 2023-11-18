@@ -180,7 +180,8 @@ MonoBehaviour:
   damage: 10
   strength: 0
   maxHealth: 30
-  radius: 0.6
+  destroyedHealthPoints: 6
+  destroyedHealthForceMagnitude: 5
   detectionRange: 15
   attackCooldown: 1.2
   attackDuration: 3
@@ -200,7 +201,9 @@ MonoBehaviour:
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   damageVisualEffectTime: 2
   attackingColor: {r: 0.5019608, g: 0, b: 1, a: 1}
+  player: {fileID: 0}
   playerTransform: {fileID: 0}
+  collectableHealth: {fileID: 7763720707685568750, guid: c0ce2a38a69d74729a0ab98e4a1a462b, type: 3}
   playerLayer:
     serializedVersion: 2
     m_Bits: 8

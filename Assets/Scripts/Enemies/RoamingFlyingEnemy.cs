@@ -4,6 +4,9 @@ public class RoamingFlyingEnemy : MonoBehaviour {
     public int damage = 8;
     public int strength = 0;
     public int maxHealth = 15;
+    public int destroyedHealthPoints = 3;
+    public int destroyedHealthForceMagnitude = 5;
+
     public float maxSpeed = 1.0f;
     public float moveForce = 2.0f;
     public float verticalMoveForce = 30.0f;
@@ -13,7 +16,6 @@ public class RoamingFlyingEnemy : MonoBehaviour {
     public float rightBoundary;
     public float bottomBoundary;
     public Color damageColor = Color.red;
-    public int healthConversionFactor = 3;
     public float damageVisualEffectTime = 2.0f;
 
     private float enemyWidth;
@@ -30,6 +32,7 @@ public class RoamingFlyingEnemy : MonoBehaviour {
     private bool movingRight = true;
 
     public Player player;
+    public GameObject collectableHealth;
     public LayerMask playerLayer;
 
     private void Start() {
@@ -153,12 +156,30 @@ public class RoamingFlyingEnemy : MonoBehaviour {
         currentHealth -= damage;
 
         if (currentHealth <= 0) {
-            player.GainHealth(numHitReceived * healthConversionFactor);
             Die();
         }
     }
 
     private void Die() {
+        if (collectableHealth != null) {
+            for (int i = 0; i < numHitReceived; i++) {
+                Vector3 spawnPosition = transform.position;
+                Quaternion spawnRotation = Quaternion.identity;
+                Vector3 healthScale = new(destroyedHealthPoints / 20f, destroyedHealthPoints / 20f, destroyedHealthPoints / 20f);
+
+                GameObject instantiatedCollectableHealth = Instantiate(collectableHealth, spawnPosition, spawnRotation);
+                instantiatedCollectableHealth.transform.localScale = healthScale;
+                Rigidbody2D healthRb = instantiatedCollectableHealth.GetComponent<Rigidbody2D>();
+
+                Vector2 randomDirection = Random.onUnitSphere;
+                randomDirection.x *= destroyedHealthPoints;
+                healthRb.AddForce(randomDirection * destroyedHealthForceMagnitude, ForceMode2D.Impulse);
+
+                CollectableHealth collectableHealthScript = instantiatedCollectableHealth.GetComponent<CollectableHealth>();
+                collectableHealthScript.healthPoints = destroyedHealthPoints;
+            }
+        }
+
         Destroy(gameObject);
     }
 }

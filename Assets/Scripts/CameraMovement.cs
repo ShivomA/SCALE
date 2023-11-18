@@ -8,6 +8,9 @@ public class CameraMovement : MonoBehaviour {
     public float playerOffsetX = 6;
     public float playerOffsetY = 6;
 
+    public float minXPos = 13f;
+    public float minYPos = 6;
+
     [Header("Background Variables")]
     public float[] Layer_Speed = new float[5];
     public GameObject[] Layer_Objects = new GameObject[5];
@@ -25,7 +28,7 @@ public class CameraMovement : MonoBehaviour {
         if (playerRb == null) { playerRb = FindObjectOfType<Player>().GetComponent<Rigidbody2D>(); }
 
         Vector3 desiredPosition = new(playerTransform.position.x + playerOffsetX, transform.position.y, transform.position.z);
-        desiredPosition.x = Mathf.Max(0, desiredPosition.x);
+        desiredPosition.x = Mathf.Max(minXPos, desiredPosition.x);
 
         transform.position = desiredPosition;
 
@@ -45,26 +48,32 @@ public class CameraMovement : MonoBehaviour {
         float yPos;
 
         if (playerTransform.position.y >= playerOffsetY) {
-            yPos = playerTransform.position.y - playerOffsetY + 1;
-        } else { yPos = 1; }
+            yPos = playerTransform.position.y - playerOffsetY + minYPos;
+        } else { yPos = minYPos; }
 
         if (movingRight) {
             int multiplyingFactor = 1;
             if (playerTransform.position.x > transform.position.x - playerOffsetX) { multiplyingFactor = 2; }
 
-            float xPos = Mathf.Max(transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime);
-            if (xPos > playerTransform.position.x + playerOffsetX) { xPos = playerTransform.position.x + playerOffsetX; }
-            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
+            float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
+            if (xPos > playerTransform.position.x + playerOffsetX) {
+                xPos = playerTransform.position.x + playerOffsetX;
+            }
+            xPos = Mathf.Max(minXPos, xPos);
 
+            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
             transform.position = desiredPosition;
         } else {
             int multiplyingFactor = 1;
             if (playerTransform.position.x < transform.position.x + playerOffsetX) { multiplyingFactor = 2; }
 
-            float xPos = Mathf.Max(transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime);
-            if (xPos < playerTransform.position.x - playerOffsetX) { xPos = playerTransform.position.x - playerOffsetX; }
-            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
+            float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
+            if (xPos < playerTransform.position.x - playerOffsetX) {
+                xPos = playerTransform.position.x - playerOffsetX;
+            }
+            xPos = Mathf.Max(minXPos, xPos);
 
+            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
             transform.position = desiredPosition;
         }
 
@@ -73,7 +82,7 @@ public class CameraMovement : MonoBehaviour {
             float temp = transform.position.x * (1 - Layer_Speed[i]);
             float distance = transform.position.x * Layer_Speed[i];
 
-            Layer_Objects[i].transform.position = new Vector2(startPos[i] + distance - offsetX, i <= 1 ? transform.position.y : 1);
+            Layer_Objects[i].transform.position = new Vector2(startPos[i] + distance - offsetX, i <= 1 ? transform.position.y : minYPos);
 
             if (temp > startPos[i] + boundSizeX * sizeX - offsetX) {
                 startPos[i] += boundSizeX * sizeX;

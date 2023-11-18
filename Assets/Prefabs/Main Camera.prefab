@@ -155,6 +155,8 @@ MonoBehaviour:
   playerRb: {fileID: 0}
   playerOffsetX: 6
   playerOffsetY: 6
+  minXPos: 13
+  minYPos: 6
   Layer_Speed:
   - 1
   - 0.8
@@ -216,6 +218,26 @@ PrefabInstance:
     - target: {fileID: 2473331377197761370, guid: e0b13035f479e4c0a8a8acccab07d075, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3107228963709883242, guid: e0b13035f479e4c0a8a8acccab07d075, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3232565173419361779, guid: e0b13035f479e4c0a8a8acccab07d075, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640816878197209904, guid: e0b13035f479e4c0a8a8acccab07d075, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3825299223907511869, guid: e0b13035f479e4c0a8a8acccab07d075, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4886869916311291973, guid: e0b13035f479e4c0a8a8acccab07d075, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6678299530735916449, guid: e0b13035f479e4c0a8a8acccab07d075, type: 3}
       propertyPath: m_Name

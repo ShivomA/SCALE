@@ -5,6 +5,9 @@ public class FollowingEnemy : MonoBehaviour {
     public int damage = 10;
     public int strength = 0;
     public int maxHealth = 30;
+    public int destroyedHealthPoints = 3;
+    public int destroyedHealthForceMagnitude = 5;
+
     public float detectionRange = 8f;
     public float normalMaxSpeed = 1.0f;
     public float normalMoveForce = 4.0f;
@@ -15,7 +18,6 @@ public class FollowingEnemy : MonoBehaviour {
     public float leftBoundary;
     public float rightBoundary;
     public Color damageColor = Color.red;
-    public int healthConversionFactor = 3;
     public float damageVisualEffectTime = 2.0f;
 
     private float enemyWidth;
@@ -34,6 +36,7 @@ public class FollowingEnemy : MonoBehaviour {
 
     public Player player;
     public Transform playerTransform;
+    public GameObject collectableHealth;
     public LayerMask playerLayer;
 
     private void Start() {
@@ -173,12 +176,30 @@ public class FollowingEnemy : MonoBehaviour {
         currentHealth -= damage;
 
         if (currentHealth <= 0) {
-            player.GainHealth(numHitReceived * healthConversionFactor);
             Die();
         }
     }
 
     private void Die() {
+        if (collectableHealth != null) {
+            for (int i = 0; i < numHitReceived; i++) {
+                Vector3 spawnPosition = transform.position;
+                Quaternion spawnRotation = Quaternion.identity;
+                Vector3 healthScale = new(destroyedHealthPoints / 20f, destroyedHealthPoints / 20f, destroyedHealthPoints / 20f);
+
+                GameObject instantiatedCollectableHealth = Instantiate(collectableHealth, spawnPosition, spawnRotation);
+                instantiatedCollectableHealth.transform.localScale = healthScale;
+                Rigidbody2D healthRb = instantiatedCollectableHealth.GetComponent<Rigidbody2D>();
+
+                Vector2 randomDirection = Random.onUnitSphere;
+                randomDirection.x *= destroyedHealthPoints;
+                healthRb.AddForce(randomDirection * destroyedHealthForceMagnitude, ForceMode2D.Impulse);
+
+                CollectableHealth collectableHealthScript = instantiatedCollectableHealth.GetComponent<CollectableHealth>();
+                collectableHealthScript.healthPoints = destroyedHealthPoints;
+            }
+        }
+
         Destroy(gameObject);
     }
 }

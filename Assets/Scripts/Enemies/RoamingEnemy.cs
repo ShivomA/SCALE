@@ -4,13 +4,15 @@ public class RoamingEnemy : MonoBehaviour {
     public int damage = 10;
     public int strength = 0;
     public int maxHealth = 20;
+    public int destroyedHealthPoints = 2;
+    public int destroyedHealthForceMagnitude = 5;
+
     public float maxSpeed = 1.0f;
     public float moveForce = 5.0f;
 
     public float leftBoundary;
     public float rightBoundary;
     public Color damageColor = Color.red;
-    public int healthConversionFactor = 2;
     public float damageVisualEffectTime = 2.0f;
 
     private float enemyWidth;
@@ -27,6 +29,7 @@ public class RoamingEnemy : MonoBehaviour {
     private bool movingRight = true;
 
     public Player player;
+    public GameObject collectableHealth;
     public LayerMask playerLayer;
 
     private void Start() {
@@ -120,7 +123,7 @@ public class RoamingEnemy : MonoBehaviour {
     private bool ShouldTakeDamage(Player player) {
         float positionIncrement = enemyWidth / (collissionRayCount - 1);
 
-        for (int i = 1; i < collissionRayCount-1; i++) {
+        for (int i = 1; i < collissionRayCount - 1; i++) {
             float originPositionX = transform.position.x - enemyWidth / 2.0f + i * positionIncrement;
             Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
 
@@ -138,12 +141,30 @@ public class RoamingEnemy : MonoBehaviour {
         currentHealth -= damage;
 
         if (currentHealth <= 0) {
-            //player.GainHealth(numHitReceived * healthConversionFactor);
-            //Die();
+            Die();
         }
     }
 
     private void Die() {
+        if (collectableHealth != null) {
+            for (int i = 0; i < numHitReceived; i++) {
+                Vector3 spawnPosition = transform.position;
+                Quaternion spawnRotation = Quaternion.identity;
+                Vector3 healthScale = new(destroyedHealthPoints / 20f, destroyedHealthPoints / 20f, destroyedHealthPoints / 20f);
+
+                GameObject instantiatedCollectableHealth = Instantiate(collectableHealth, spawnPosition, spawnRotation);
+                instantiatedCollectableHealth.transform.localScale = healthScale;
+                Rigidbody2D healthRb = instantiatedCollectableHealth.GetComponent<Rigidbody2D>();
+
+                Vector2 randomDirection = Random.onUnitSphere;
+                randomDirection.x *= destroyedHealthPoints;
+                healthRb.AddForce(randomDirection * destroyedHealthForceMagnitude, ForceMode2D.Impulse);
+
+                CollectableHealth collectableHealthScript = instantiatedCollectableHealth.GetComponent<CollectableHealth>();
+                collectableHealthScript.healthPoints = destroyedHealthPoints;
+            }
+        }
+
         Destroy(gameObject);
     }
 }
