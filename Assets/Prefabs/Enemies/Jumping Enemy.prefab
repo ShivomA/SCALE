@@ -177,10 +177,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 653dda301d67c420b9ec1f099f89d5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 15
+  damage: 12
   strength: 0
-  maxHealth: 30
-  destroyedHealthPoints: 5
+  maxHealth: 20
+  destroyedHealthPoints: 3
   destroyedHealthForceMagnitude: 5
   radius: 1.2
   jumpForce: 10

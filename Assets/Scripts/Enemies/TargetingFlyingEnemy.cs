@@ -1,11 +1,12 @@
 using UnityEngine;
 
 public class TargetingFlyingEnemy : MonoBehaviour {
-    public int damage = 10;
+    public int damage = 15;
     public int strength = 0;
-    public int maxHealth = 30;
-    public int destroyedHealthPoints = 6;
-    public int destroyedHealthForceMagnitude = 5;
+    public int maxHealth = 16;
+
+    public float destroyedHealthPoints = 3.5f;
+    public float destroyedHealthForceMagnitude = 5;
 
     public float detectionRange = 15f;
     public float attackCooldown = 1.2f;

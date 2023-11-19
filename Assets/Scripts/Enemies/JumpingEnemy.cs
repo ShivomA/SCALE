@@ -2,11 +2,12 @@
 using UnityEngine;
 
 public class JumpingEnemy : MonoBehaviour {
-    public int damage = 15;
+    public int damage = 12;
     public int strength = 0;
-    public int maxHealth = 30;
-    public int destroyedHealthPoints = 5;
-    public int destroyedHealthForceMagnitude = 5;
+    public int maxHealth = 20;
+
+    public float destroyedHealthPoints = 3;
+    public float destroyedHealthForceMagnitude = 5;
 
     public float radius = 1.2f;
     public float jumpForce = 10.0f;

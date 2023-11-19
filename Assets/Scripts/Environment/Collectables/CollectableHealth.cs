@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class CollectableHealth : MonoBehaviour {
-    public int healthPoints = 2;
+    public float healthPoints = 2;
     public float destroyTime = 120;
 
     void Start() {

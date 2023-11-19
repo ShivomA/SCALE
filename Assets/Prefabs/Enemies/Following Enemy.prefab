@@ -177,17 +177,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 698e5ceb2de314d249e20b62d8c3ef56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 8
   strength: 0
-  maxHealth: 30
-  destroyedHealthPoints: 3
+  maxHealth: 15
+  destroyedHealthPoints: 1.5
   destroyedHealthForceMagnitude: 5
   detectionRange: 8
   normalMaxSpeed: 1
   normalMoveForce: 4
   followingMaxSpeed: 3
-  followingMoveForce: 6
-  verticalDetectionRange: 2.5
+  followingMoveForce: 8
+  retreatingMoveForce: 50
+  verticalDetectionRange: 6
   leftBoundary: 0
   rightBoundary: 0
   damageColor: {r: 1, g: 0, b: 0, a: 1}

@@ -6,13 +6,15 @@ public class CameraMovement : MonoBehaviour {
     public Rigidbody2D playerRb;
 
     public float playerOffsetX = 6;
-    public float playerOffsetY = 6;
+    public float playerOffsetY = 8;
 
-    public float minXPos = 13f;
     public float minYPos = 6;
+    public float minXPos = 13f;
+    public float maxXPos = 500f;
 
     [Header("Background Variables")]
-    public float[] Layer_Speed = new float[5];
+    public float[] layerSpeedX = new float[5] {1, 0.8f, 0.6f, 0.5f, 0 };
+    public float[] layerSpeedY = new float[5] {0, 0, -0.5f, -0.7f, -1 };
     public GameObject[] Layer_Objects = new GameObject[5];
 
     private float[] startPos = new float[5];
@@ -79,10 +81,12 @@ public class CameraMovement : MonoBehaviour {
 
 
         for (int i = 0; i < Layer_Objects.Length; i++) {
-            float temp = transform.position.x * (1 - Layer_Speed[i]);
-            float distance = transform.position.x * Layer_Speed[i];
+            float temp = transform.position.x * (1 - layerSpeedX[i]);
+            float distanceX = transform.position.x * layerSpeedX[i];
 
-            Layer_Objects[i].transform.position = new Vector2(startPos[i] + distance - offsetX, i <= 1 ? transform.position.y : minYPos);
+            float distanceY = transform.position.y + (transform.position.y - minYPos) * layerSpeedY[i];
+
+            Layer_Objects[i].transform.position = new Vector2(startPos[i] + distanceX - offsetX, distanceY);
 
             if (temp > startPos[i] + boundSizeX * sizeX - offsetX) {
                 startPos[i] += boundSizeX * sizeX;

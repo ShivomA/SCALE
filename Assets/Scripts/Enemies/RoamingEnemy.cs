@@ -1,11 +1,12 @@
 using UnityEngine;
 
 public class RoamingEnemy : MonoBehaviour {
-    public int damage = 10;
+    public int damage = 6;
     public int strength = 0;
-    public int maxHealth = 20;
-    public int destroyedHealthPoints = 2;
-    public int destroyedHealthForceMagnitude = 5;
+    public int maxHealth = 12;
+
+    public float destroyedHealthPoints = 1;
+    public float destroyedHealthForceMagnitude = 5;
 
     public float maxSpeed = 1.0f;
     public float moveForce = 5.0f;

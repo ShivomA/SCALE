@@ -73,16 +73,6 @@ public class Player : MonoBehaviour {
         damagePower = minDamagePower + (sizeScale - sizeScaleMin) * (maxDamagePower - minDamagePower) / (sizeScaleMax - sizeScaleMin);
     }
 
-    public void GainHealth(int healthPoints) {
-        health += healthPoints;
-        health = Mathf.Min(health, maxHealth);
-
-        currentMinHealth = health * minMaxHealth / maxHealth;
-        currentMaxHealth = health * maxMaxHealth / maxHealth;
-
-        healthText.text = (int)health + "/" + (int)maxHealth;
-    }
-
     public void TakeDamage(int damage) {
         if (canTakeDamage) {
             health -= damage;
@@ -98,6 +88,20 @@ public class Player : MonoBehaviour {
         } else {
             Debug.Log("Player is Immune");
         }
+    }
+
+    public void GainHealth(float healthPoints) {
+        health += healthPoints;
+        health = Mathf.Min(health, maxHealth);
+
+        currentMinHealth = health * minMaxHealth / maxHealth;
+        currentMaxHealth = health * maxMaxHealth / maxHealth;
+
+        healthText.text = (int)health + "/" + (int)maxHealth;
+    }
+
+    public void DieByFalling() {
+        Debug.Log("Player is Dead by Falling");
     }
 
     private void Die() {

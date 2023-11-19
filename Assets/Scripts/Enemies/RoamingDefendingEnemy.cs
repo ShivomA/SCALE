@@ -1,31 +1,37 @@
 using UnityEngine;
 
-public class RoamingFlyingEnemy : MonoBehaviour {
-    public int damage = 4;
+public class RoamingDefendingEnemy : MonoBehaviour {
+    public int damage = 6;
     public int strength = 0;
-    public int maxHealth = 16;
+    public int maxHealth = 12;
 
-    public float destroyedHealthPoints = 2;
+    public float maxDefendingStrength = 50;
+
+    public float destroyedHealthPoints = 2.5f;
     public float destroyedHealthForceMagnitude = 5;
 
     public float maxSpeed = 1.0f;
-    public float moveForce = 2.0f;
-    public float verticalMoveForce = 30.0f;
+    public float moveForce = 5.0f;
+    public float detectionRange = 6f;
+    public float defendCooldown = 1.2f;
+    public float verticalDetectionRange = 5f;
 
-    public float topBoundary;
     public float leftBoundary;
     public float rightBoundary;
-    public float bottomBoundary;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
+    public Color defendingColor = new(128, 0, 255);
 
     private float enemyWidth;
     private float enemyHeight;
     private int collissionRayCount = 5;
 
+    private float steadyTime;
     private int currentHealth;
     private Color originalColor;
     private int numHitReceived = 0;
+    private bool isDefending = false;
+    private float defendingStrength = 25;
     private float damageVisualEffectImpactTime;
     private SpriteRenderer enemySpriteRenderer;
 
@@ -33,12 +39,16 @@ public class RoamingFlyingEnemy : MonoBehaviour {
     private bool movingRight = true;
 
     public Player player;
+    public Transform playerTransform;
     public GameObject collectableHealth;
     public LayerMask playerLayer;
 
     private void Start() {
         if (player == null)
             player = FindObjectOfType<Player>();
+
+        if (playerTransform == null)
+            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         float sizeX = transform.localScale.x;
         float sizeY = transform.localScale.y;
@@ -57,11 +67,6 @@ public class RoamingFlyingEnemy : MonoBehaviour {
             leftBoundary = transform.position.x - 10;
             rightBoundary = transform.position.x + 10;
         }
-
-        if (topBoundary == bottomBoundary) {
-            topBoundary = transform.position.y + 4;
-            bottomBoundary = transform.position.y - 4;
-        }
     }
 
     private void Update() {
@@ -73,26 +78,42 @@ public class RoamingFlyingEnemy : MonoBehaviour {
     }
 
     private void MovementLogic() {
-        float yForce = (Mathf.PingPong(Time.time, 1.0f) - 0.5f) * verticalMoveForce;
+        bool sawPlayer;
 
-        if (movingRight) {
-            rb.AddForce(new Vector2(moveForce, yForce));
-            if (transform.position.x >= rightBoundary) {
-                Flip();
+        if (defendingStrength > 0 && Mathf.Abs(playerTransform.position.x - transform.position.x) < detectionRange &&
+            Mathf.Abs(playerTransform.position.y - transform.position.y) < verticalDetectionRange) {
+            sawPlayer = true;
+        } else { sawPlayer = false; }
+
+        if (sawPlayer) {
+            if (steadyTime <= defendCooldown) {
+                steadyTime += Time.deltaTime;
+            }
+            rb.velocity = Vector2.zero;
+
+            if (steadyTime > defendCooldown && defendingStrength > 0) {
+                isDefending = true;
+                enemySpriteRenderer.color = Color.Lerp(originalColor, defendingColor, defendingStrength / maxDefendingStrength);
             }
         } else {
-            rb.AddForce(new Vector2(-moveForce, yForce));
-            if (transform.position.x <= leftBoundary) {
-                Flip();
+            if (steadyTime > 0) { steadyTime -= Time.deltaTime; }
+            isDefending = false;
+            enemySpriteRenderer.color = Color.Lerp(originalColor, defendingColor, steadyTime / defendCooldown);
+
+            if (movingRight) {
+                rb.AddForce(Vector2.right * moveForce);
+                if (transform.position.x >= rightBoundary) {
+                    Flip();
+                }
+            } else {
+                rb.AddForce(Vector2.left * moveForce);
+                if (transform.position.x <= leftBoundary) {
+                    Flip();
+                }
             }
+
+            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), rb.velocity.y);
         }
-
-        if (transform.position.y > topBoundary)
-            rb.AddForce(Vector2.down * verticalMoveForce);
-        else if (transform.position.y < bottomBoundary)
-            rb.AddForce(Vector2.up * verticalMoveForce);
-
-        rb.velocity = new Vector2(rb.velocity.x,rb.velocity.y).normalized * maxSpeed;
     }
 
     private void Flip() {
@@ -137,20 +158,30 @@ public class RoamingFlyingEnemy : MonoBehaviour {
     }
 
     private bool ShouldTakeDamage(Player player) {
-        float positionIncrement = enemyWidth / (collissionRayCount - 1);
+        if (isDefending && defendingStrength > 0) {
+            defendingStrength -= player.damagePower;
+            enemySpriteRenderer.color = Color.Lerp(originalColor, defendingColor, defendingStrength / maxDefendingStrength);
 
-        for (int i = 1; i < collissionRayCount - 1; i++) {
-            float originPositionX = transform.position.x - enemyWidth / 2.0f + i * positionIncrement;
-            Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
+            if (defendingStrength <= 0)
+                isDefending = false;
 
-            if (Physics2D.Raycast(originPosition, Vector2.up, enemyHeight, playerLayer)) {
-                if (player.damagePower >= strength) {
-                    return true;
+            return false;
+        } else {
+            float positionIncrement = enemyWidth / (collissionRayCount - 1);
+
+            for (int i = 0; i < collissionRayCount; i++) {
+                float originPositionX = transform.position.x - enemyWidth / 2.0f + i * positionIncrement;
+                Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
+
+                if (Physics2D.Raycast(originPosition, Vector2.up, enemyHeight, playerLayer)) {
+                    if (player.damagePower >= strength) {
+                        return true;
+                    }
                 }
             }
-        }
 
-        return false;
+            return false;
+        }
     }
 
     public void TakeDamage(int damage) {

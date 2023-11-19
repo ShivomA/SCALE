@@ -1,11 +1,12 @@
 using UnityEngine;
 
 public class FollowingFlyingEnemy : MonoBehaviour {
-    public int damage = 10;
+    public int damage = 8;
     public int strength = 0;
-    public int maxHealth = 30;
-    public int destroyedHealthPoints = 4;
-    public int destroyedHealthForceMagnitude = 5;
+    public int maxHealth = 18;
+
+    public float destroyedHealthPoints = 2.5f;
+    public float destroyedHealthForceMagnitude = 5;
 
     public float detectionRange = 8f;
     public float normalMaxSpeedX = 2.0f;

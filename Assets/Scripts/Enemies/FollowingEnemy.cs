@@ -2,18 +2,20 @@
 using UnityEngine;
 
 public class FollowingEnemy : MonoBehaviour {
-    public int damage = 10;
+    public int damage = 8;
     public int strength = 0;
-    public int maxHealth = 30;
-    public int destroyedHealthPoints = 3;
-    public int destroyedHealthForceMagnitude = 5;
+    public int maxHealth = 15;
+
+    public float destroyedHealthPoints = 1.5f;
+    public float destroyedHealthForceMagnitude = 5;
 
     public float detectionRange = 8f;
     public float normalMaxSpeed = 1.0f;
     public float normalMoveForce = 4.0f;
     public float followingMaxSpeed = 3.0f;
-    public float followingMoveForce = 6.0f;
-    public float verticalDetectionRange = 2.5f;
+    public float followingMoveForce = 8.0f;
+    public float retreatingMoveForce = 50.0f;
+    public float verticalDetectionRange = 6.0f;
 
     public float leftBoundary;
     public float rightBoundary;
@@ -60,8 +62,8 @@ public class FollowingEnemy : MonoBehaviour {
         originalColor = enemySpriteRenderer.color;
 
         if (leftBoundary == rightBoundary) {
-            leftBoundary = transform.position.x - 15;
-            rightBoundary = transform.position.x + 15;
+            leftBoundary = transform.position.x - 10;
+            rightBoundary = transform.position.x + 10;
         }
     }
 
@@ -82,7 +84,13 @@ public class FollowingEnemy : MonoBehaviour {
         } else { sawPlayer = false; }
 
         if (sawPlayer) {
-            rb.AddForce(followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right);
+            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 5 &&
+                playerTransform.position.y - transform.position.y > 1.5) {
+                rb.AddForce(retreatingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.left);
+            } else {
+                rb.AddForce(followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right);
+            }
+
             rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
         } else {
             bool outOfBoundary = false;
