@@ -1,19 +1,16 @@
 using UnityEngine;
 
-public class MovingPlatforms : MonoBehaviour {
+public class StableVerticalMovingPlatform : MonoBehaviour {
     public float topBoundary;
     public float bottomBoundary;
 
-    public float maxSpeed = 2f;
-    public float moveForceUp = 30.0f;
-    public float moveForceDown = 5.0f;
+    public float movingSpeed = 2f;
     public float platformWidth = 6.5f;
     public float platformHeight = 1.1f;
 
     public int collissionRayCount = 7;
 
-    public LayerMask collissionLayerTop;
-    public LayerMask collissionLayerBottom;
+    public LayerMask collissionLayer;
 
     private Rigidbody2D rb;
     public bool movingUp = true;
@@ -40,18 +37,16 @@ public class MovingPlatforms : MonoBehaviour {
 
     private void MovementLogic() {
         if (movingUp) {
-            rb.AddForce(Vector2.up * moveForceUp);
+            rb.velocity = new Vector2(0, movingSpeed);
             if (transform.position.y >= topBoundary) {
                 Flip();
             }
         } else {
-            rb.AddForce(Vector2.down * moveForceDown);
+            rb.velocity = new Vector2(0, -movingSpeed);
             if (transform.position.x <= bottomBoundary) {
                 Flip();
             }
         }
-
-        rb.velocity = new Vector2(0, Mathf.Clamp(rb.velocity.y, -maxSpeed, maxSpeed));
     }
 
     private void Flip() {
@@ -69,7 +64,7 @@ public class MovingPlatforms : MonoBehaviour {
                 float originPositionX = transform.position.x - platformWidth / 2.0f + i * positionIncrement;
                 Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
 
-                if (Physics2D.Raycast(originPosition, Vector2.up, platformHeight, collissionLayerTop)) {
+                if (Physics2D.Raycast(originPosition, Vector2.up, platformHeight, collissionLayer)) {
                     Flip();
                     break;
                 }
@@ -82,7 +77,7 @@ public class MovingPlatforms : MonoBehaviour {
                 float originPositionX = transform.position.x - platformWidth / 2.0f + i * positionIncrement;
                 Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
 
-                if (Physics2D.Raycast(originPosition, Vector2.down, platformHeight, collissionLayerBottom)) {
+                if (Physics2D.Raycast(originPosition, Vector2.down, platformHeight, collissionLayer)) {
                     Flip();
                     break;
                 }
