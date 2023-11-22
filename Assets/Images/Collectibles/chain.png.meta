@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 61e3116d79fc04670aa5bc732aff6dda
+guid: fbd52471b696048a6abbecb02a829ea6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -37,15 +37,15 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 0
+    wrapU: 1
     wrapV: 1
     wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -121,105 +121,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: Floating Platform L
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 4
-        width: 237
-        height: 242
-      alignment: 5
-      pivot: {x: 1, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape:
-      - - {x: -88.5, y: 117}
-        - {x: -113.5, y: 100}
-        - {x: -118.5, y: 58}
-        - {x: -116.5, y: 22}
-        - {x: -81.5, y: -36}
-        - {x: -61.5, y: -50}
-        - {x: -43.5, y: -82}
-        - {x: 25.5, y: -111}
-        - {x: 53.5, y: -117}
-        - {x: 84.5, y: -114}
-        - {x: 118.5, y: -109}
-        - {x: 118.5, y: 117}
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0bec2ec3a37744e03b1a9b035e477679
-      internalID: 1489900632
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Floating Platform M
-      rect:
-        serializedVersion: 2
-        x: 281
-        y: 4
-        width: 239
-        height: 242
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape:
-      - - {x: -119.5, y: 121}
-        - {x: -119.5, y: -107}
-        - {x: -77.5, y: -105}
-        - {x: -54.5, y: -108}
-        - {x: -36.5, y: -121}
-        - {x: 6.5, y: -121}
-        - {x: 29.5, y: -114}
-        - {x: 51.5, y: -118}
-        - {x: 73.5, y: -116}
-        - {x: 96.5, y: -106}
-        - {x: 119.5, y: -107}
-        - {x: 119.5, y: 121}
-      tessellationDetail: 0
-      bones: []
-      spriteID: 20c4b677755524e8f8bc5f6bf0a47a1a
-      internalID: -457890655
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Floating Platform R
-      rect:
-        serializedVersion: 2
-        x: 557
-        y: 4
-        width: 237
-        height: 242
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape:
-      - - {x: 85.5, y: 117}
-        - {x: -118.5, y: 117}
-        - {x: -118.5, y: -109}
-        - {x: -56.5, y: -117}
-        - {x: 5.5, y: -101}
-        - {x: 37.5, y: -85}
-        - {x: 63.5, y: -47}
-        - {x: 95.5, y: -16}
-        - {x: 117.5, y: 33}
-        - {x: 116.5, y: 75}
-        - {x: 112.5, y: 101}
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6675fb2f74c6c4d2f85297566a42699b
-      internalID: -1467278028
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -230,10 +132,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Floating Platform L: 1489900632
-      Floating Platform M: -457890655
-      Floating Platform R: -1467278028
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

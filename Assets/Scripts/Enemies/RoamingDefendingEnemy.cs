@@ -7,7 +7,7 @@ public class RoamingDefendingEnemy : MonoBehaviour {
 
     public float maxDefendingStrength = 50;
 
-    public float destroyedHealthPoints = 2.5f;
+    public float destroyedHealthPoints = 2f;
     public float destroyedHealthForceMagnitude = 5;
 
     public float maxSpeed = 1.0f;

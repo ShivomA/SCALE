@@ -43,7 +43,7 @@ public class StableVerticalMovingPlatform : MonoBehaviour {
             }
         } else {
             rb.velocity = new Vector2(0, -movingSpeed);
-            if (transform.position.x <= bottomBoundary) {
+            if (transform.position.y <= bottomBoundary) {
                 Flip();
             }
         }

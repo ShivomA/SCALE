@@ -6,14 +6,16 @@ public class JumpingEnemy : MonoBehaviour {
     public int strength = 0;
     public int maxHealth = 20;
 
-    public float destroyedHealthPoints = 3;
+    public float destroyedHealthPoints = 2.5f;
     public float destroyedHealthForceMagnitude = 5;
 
+    public int numAirJump = 2;
     public float radius = 1.2f;
     public float jumpForce = 10.0f;
-    public float jumpCooldown = 1.2f;
-    public float detectionRange = 8.0f;
+    public float jumpCooldown = 0.5f;
     public float normalMaxSpeed = 1.5f;
+    public float detectionRange = 14.0f;
+    public float airJumpCooldown = 1.2f;
     public float normalMoveForce = 10.0f;
     public float followingMaxSpeed = 4.0f;
     public float followingMoveForce = 0.5f;
@@ -21,7 +23,8 @@ public class JumpingEnemy : MonoBehaviour {
 
     public float leftBoundary;
     public float rightBoundary;
-    public float heightOffset = 1.5f;
+    public float dangerBoundaryLeft;
+    public float dangerBoundaryRight;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
@@ -32,7 +35,9 @@ public class JumpingEnemy : MonoBehaviour {
     private float enemyHeight;
     private int collissionRayCount = 5;
 
+    private int numJumps;
     private float steadyTime;
+    private float airJumpTime;
     private int currentHealth;
     private Color originalColor;
     private bool isGrounded = true;
@@ -85,9 +90,34 @@ public class JumpingEnemy : MonoBehaviour {
         MovementLogic();
     }
 
+    private void Jump() {
+        bool shouldJump = false;
+        if (numJumps == 0) {
+            shouldJump = true;
+        } else {
+            if (playerTransform.position.y >= transform.position.y) {
+                shouldJump = true;
+            }
+        }
+
+        if (shouldJump) {
+            float xForce = followingMoveForce * (playerTransform.position.x - transform.position.x);
+            rb.AddForce(new Vector2(xForce, jumpForce), ForceMode2D.Impulse);
+
+            numJumps += 1;
+            steadyTime = 0;
+            isGrounded = false;
+            airJumpTime = airJumpCooldown * (numJumps - 1);
+        }
+        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
+    }
+
     private void MovementLogic() {
         if (steadyTime <= jumpCooldown && isGrounded) {
             steadyTime += Time.deltaTime;
+        }
+        if (airJumpTime <= airJumpCooldown * numAirJump) {
+            airJumpTime += Time.deltaTime;
         }
 
         bool sawPlayer;
@@ -98,16 +128,27 @@ public class JumpingEnemy : MonoBehaviour {
         } else { sawPlayer = false; }
 
         if (sawPlayer) {
-            if (steadyTime >= jumpCooldown && isGrounded) {
-                if (playerTransform.position.y >= transform.position.y - heightOffset) {
-                    float xForce = followingMoveForce * (playerTransform.position.x - transform.position.x);
-                    rb.AddForce(new Vector2(xForce, jumpForce), ForceMode2D.Impulse);
+            if (dangerBoundaryLeft == dangerBoundaryRight) {
+                if (isGrounded) {
+                    if (steadyTime >= jumpCooldown) {
+                        Jump();
+                    }
+                } else if (0 < numJumps && numJumps < numAirJump && airJumpTime >= airJumpCooldown * numJumps) {
+                    Jump();
                 }
-
-                steadyTime = 0;
-                isGrounded = false;
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);
+            } else {
+                if (playerTransform.position.x > dangerBoundaryLeft &&
+                 playerTransform.position.x < dangerBoundaryRight) {
+                    if (isGrounded) {
+                        if (steadyTime >= jumpCooldown) {
+                            Jump();
+                        }
+                    } else if (0 < numJumps && numJumps < numAirJump && airJumpTime >= airJumpCooldown * numJumps) {
+                        Jump();
+                    }
+                }
             }
+
         } else {
             bool outOfBoundary = false;
 
@@ -168,14 +209,16 @@ public class JumpingEnemy : MonoBehaviour {
 
             if (Physics2D.Raycast(transform.position, direction, radius, groundLayer)) {
                 isGrounded = true;
+                numJumps = 0;
                 break;
             }
         }
 
         if (i == groundCheckRayCount) {
             isGrounded = false;
-        } else if (steadyTime >= jumpCooldown) {
+        } else {
             steadyTime = 0;
+            airJumpTime = 0;
         }
 
         if (collision.gameObject.CompareTag("Player")) {
@@ -208,14 +251,16 @@ public class JumpingEnemy : MonoBehaviour {
 
             if (Physics2D.Raycast(transform.position, direction, radius, groundLayer)) {
                 isGrounded = true;
+                numJumps = 0;
                 break;
             }
         }
 
         if (i == groundCheckRayCount) {
             isGrounded = false;
-        } else if (steadyTime >= jumpCooldown) {
+        } else {
             steadyTime = 0;
+            airJumpTime = 0;
         }
     }
 

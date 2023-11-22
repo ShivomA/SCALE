@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8076842302529464545}
   - component: {fileID: 7589307670845757948}
   - component: {fileID: 2779200680166492824}
+  - component: {fileID: 1981809688522848879}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -155,6 +156,7 @@ MonoBehaviour:
   playerRb: {fileID: 0}
   playerOffsetX: 6
   playerOffsetY: 8
+  cameraControlSpeed: 15
   minYPos: 6
   minXPos: 13
   maxXPos: 500
@@ -178,6 +180,23 @@ MonoBehaviour:
   - {fileID: 5522060810286160379}
   parent: {fileID: 8819024339822509622}
   offsetX: 2
+--- !u!114 &1981809688522848879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395727610042013977}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be0ab44068df04b9d8b2a199c2273e9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 0}
+  cameraMovement: {fileID: 0}
+  playerController: {fileID: 0}
+  cameraMovementSpeed: 50
+  maxCameraMovementSpeed: 150
 --- !u!1001 &6354717758530764140
 PrefabInstance:
   m_ObjectHideFlags: 0

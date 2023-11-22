@@ -19,6 +19,8 @@ public class FollowingEnemy : MonoBehaviour {
 
     public float leftBoundary;
     public float rightBoundary;
+    public float dangerBoundaryLeft;
+    public float dangerBoundaryRight;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
@@ -84,11 +86,30 @@ public class FollowingEnemy : MonoBehaviour {
         } else { sawPlayer = false; }
 
         if (sawPlayer) {
-            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 5 &&
-                playerTransform.position.y - transform.position.y > 1.5) {
-                rb.AddForce(retreatingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.left);
+            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 5 && playerTransform.position.y - transform.position.y > 1.5) {
+                Vector2 forceToApply = retreatingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.left;
+                if (dangerBoundaryLeft != dangerBoundaryRight) {
+                    if (transform.position.x < dangerBoundaryLeft + 2 && forceToApply.x < 0) {
+                        if (playerTransform.position.x < dangerBoundaryLeft + 2) {
+                            forceToApply *= -1;
+                        }
+                    } else if (transform.position.x > dangerBoundaryRight - 2 && forceToApply.x > 0) {
+                        if (playerTransform.position.x > dangerBoundaryRight - 2) {
+                            forceToApply *= -1;
+                        }
+                    }
+                }
+                rb.AddForce(forceToApply);
             } else {
-                rb.AddForce(followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right);
+                Vector2 forceToApply = followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right;
+                if (dangerBoundaryLeft != dangerBoundaryRight) {
+                    if (transform.position.x < dangerBoundaryLeft && forceToApply.x < 0) {
+                        forceToApply *= -1;
+                    } else if (transform.position.x > dangerBoundaryRight && forceToApply.x > 0) {
+                        forceToApply *= -1;
+                    }
+                }
+                rb.AddForce(forceToApply);
             }
 
             rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeed, followingMaxSpeed), rb.velocity.y);

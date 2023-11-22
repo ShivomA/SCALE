@@ -162,7 +162,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efd2d763a49c94491884b4323226a005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePower: 5
   mass: 4
   sizeChangeSpeed: 10
   groundCheckAngle: 60
@@ -179,8 +178,6 @@ MonoBehaviour:
   maxJumpForce: 25
   minMaxJumpTime: 0.3
   maxMaxJumpTime: 0.5
-  minDamagePower: 4
-  maxDamagePower: 8
   minMaxMomentum: 5
   maxMaxMomentum: 30
   minplayerRadius: 0.35
@@ -202,13 +199,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b8877fa444b841d1907922364e7aef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  cameraMovement: {fileID: 0}
+  playerController: {fileID: 0}
+  resetCameraPosition: {fileID: 0}
+  startPosition: {x: 9, y: 3, z: 0}
   maxHealth: 100
+  damagePower: 5
   minMaxHealth: 40
   maxMaxHealth: 100
+  minDamagePower: 4
+  maxDamagePower: 8
   damageCooldownTime: 2
   damageCooldownEffectTime: 0.2
   damageTakenForceX: 5
   damageTakenForceY: 5
   immuneColor: {r: 1, g: 0, b: 0, a: 1}
   healthText: {fileID: 0}
+  destroyedHealthPoints: 3
+  destroyedHealthForceMagnitude: 5
+  collectableHealth: {fileID: 7763720707685568750, guid: 44cac4757ed814a1eb3c992ef24b8910, type: 3}
   health: 0

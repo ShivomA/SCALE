@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2663846905691607622}
   m_Layer: 9
   m_Name: Following Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -191,6 +191,8 @@ MonoBehaviour:
   verticalDetectionRange: 6
   leftBoundary: 0
   rightBoundary: 0
+  dangerBoundaryLeft: 0
+  dangerBoundaryRight: 0
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   damageVisualEffectTime: 2
   player: {fileID: 0}

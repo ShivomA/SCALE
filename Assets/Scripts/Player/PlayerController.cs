@@ -116,11 +116,18 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    private bool CanGrow() {
+        return !((Physics2D.Raycast(transform.position, Vector2.up, playerRadius, groundLayer) &&
+            Physics2D.Raycast(transform.position, Vector2.down, playerRadius, groundLayer)) ||
+            (Physics2D.Raycast(transform.position, Vector2.left, playerRadius, groundLayer) &&
+            Physics2D.Raycast(transform.position, Vector2.right, playerRadius, groundLayer)));
+    }
+
     private void ChangeSize() {
         float sizeInput = Input.GetAxis("Vertical") * sizeChangeSpeed;
 
         if (Mathf.Abs(sizeInput) >= 0.3) {
-            if (sizeInput < 0 || !Physics2D.Raycast(transform.position, Vector2.up, playerRadius, groundLayer)) {
+            if (sizeInput < 0 || CanGrow()) {
                 sizeScale = Mathf.Clamp(sizeScale + sizeInput * Time.deltaTime, sizeScaleMin, sizeScaleMax);
 
                 player.UpdateHealth(sizeScale, sizeScaleMin, sizeScaleMax);

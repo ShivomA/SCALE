@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6859396972807571873}
   m_Layer: 9
   m_Name: Roaming Defending Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
   strength: 0
   maxHealth: 12
   maxDefendingStrength: 50
-  destroyedHealthPoints: 2.5
+  destroyedHealthPoints: 2
   destroyedHealthForceMagnitude: 5
   maxSpeed: 1
   moveForce: 5

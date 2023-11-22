@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6549072973152315582}
   m_Layer: 9
   m_Name: Jumping Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -180,20 +180,23 @@ MonoBehaviour:
   damage: 12
   strength: 0
   maxHealth: 20
-  destroyedHealthPoints: 3
+  destroyedHealthPoints: 2.5
   destroyedHealthForceMagnitude: 5
+  numAirJump: 2
   radius: 1.2
   jumpForce: 10
-  jumpCooldown: 1.2
-  detectionRange: 8
+  jumpCooldown: 0.5
   normalMaxSpeed: 1.5
+  detectionRange: 14
+  airJumpCooldown: 1.2
   normalMoveForce: 10
   followingMaxSpeed: 4
   followingMoveForce: 0.5
   verticalDetectionRange: 10
   leftBoundary: 0
   rightBoundary: 0
-  heightOffset: 1.5
+  dangerBoundaryLeft: 0
+  dangerBoundaryRight: 0
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   damageVisualEffectTime: 2
   groundCheckAngle: 30
@@ -206,4 +209,4 @@ MonoBehaviour:
     m_Bits: 8
   groundLayer:
     serializedVersion: 2
-    m_Bits: 712
+    m_Bits: 1480
