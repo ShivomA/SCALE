@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelController : MonoBehaviour {
+    public Vector3 startPosition = new(9, 3, 0);
+
     public CameraMovement cameraMovement;
     public PlayerController playerController;
     public ResetCameraPosition resetCameraPosition;
@@ -79,7 +81,7 @@ public class LevelController : MonoBehaviour {
 
             GameObject spawnedUnstablePlatform = Instantiate(unstablePlatform, spawnPosition, spawnRotation);
             spawnedUnstablePlatform.SetActive(true);
-            activeUnstableObjects.Add(spawnedUnstablePlatform);
+            activeUnstablePlatforms.Add(spawnedUnstablePlatform);
         }
     }
 
@@ -95,6 +97,7 @@ public class LevelController : MonoBehaviour {
     public void PlayerDied() {
         cameraMovement.enabled = false;
         playerController.enabled = false;
+        playerController.transform.position = startPosition;
 
         Invoke(nameof(FocusPlayer), 1);
         Invoke(nameof(ResetLevel), 1);

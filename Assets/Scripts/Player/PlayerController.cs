@@ -24,14 +24,14 @@ public class PlayerController : MonoBehaviour {
     public float maxSize = 0.8f;
     public float minMass = 0.5f;
     public float maxMass = 4.0f;
-    public float minMoveForce = 3.0f;
-    public float maxMoveForce = 9.0f;
     public float minJumpForce = 2.0f;
     public float maxJumpForce = 25.0f;
+    public float minMoveForce = 10.0f;
+    public float maxMoveForce = 30.0f;
     public float minMaxJumpTime = 0.3f;
     public float maxMaxJumpTime = 0.5f;
-    public float minMaxMomentum = 5.0f;
-    public float maxMaxMomentum = 30.0f;
+    public float minMaxMomentum = 10.0f;
+    public float maxMaxMomentum = 50.0f;
     public float minplayerRadius = 0.35f;
     public float maxplayerRadius = 1.40f;
     public float minDecelerationRate = 2f;
@@ -88,6 +88,12 @@ public class PlayerController : MonoBehaviour {
         if (Mathf.Abs(currentMomentum + force.x) > maxMomentum) {
             force.x = (Mathf.Sign(moveInput) * maxMomentum - currentMomentum) * momentumDecreaseFactor;
         }
+        if (!isGrounded) {
+            force.x *= 0.5f;
+            float decelerationForceX = -rb.velocity.x * decelerationRate * 0.2f;
+            rb.AddForce(Vector2.right * decelerationForceX);
+        }
+
         rb.AddForce(force);
 
         if (moveInput == 0 || moveInput * rb.velocity.x < 0) {

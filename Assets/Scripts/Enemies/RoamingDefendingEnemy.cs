@@ -197,18 +197,16 @@ public class RoamingDefendingEnemy : MonoBehaviour {
             for (int i = 0; i < numHitReceived; i++) {
                 Vector3 spawnPosition = transform.position;
                 Quaternion spawnRotation = Quaternion.identity;
-                Vector3 healthScale = new(destroyedHealthPoints / 20f, destroyedHealthPoints / 20f, destroyedHealthPoints / 20f);
 
                 GameObject instantiatedCollectableHealth = Instantiate(collectableHealth, spawnPosition, spawnRotation);
-                instantiatedCollectableHealth.transform.localScale = healthScale;
                 Rigidbody2D healthRb = instantiatedCollectableHealth.GetComponent<Rigidbody2D>();
+
+                CollectableHealth collectableHealthScript = instantiatedCollectableHealth.GetComponent<CollectableHealth>();
+                collectableHealthScript.UpdateHealthPoint(destroyedHealthPoints);
 
                 Vector2 randomDirection = Random.onUnitSphere;
                 randomDirection.x *= destroyedHealthPoints;
                 healthRb.AddForce(randomDirection * destroyedHealthForceMagnitude, ForceMode2D.Impulse);
-
-                CollectableHealth collectableHealthScript = instantiatedCollectableHealth.GetComponent<CollectableHealth>();
-                collectableHealthScript.healthPoints = destroyedHealthPoints;
             }
         }
 

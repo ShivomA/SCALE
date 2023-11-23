@@ -49,7 +49,6 @@ public class CameraMovement : MonoBehaviour {
 
         offsetX += transform.position.x % (boundSizeX * sizeX);
 
-        Debug.Log(startPos);
         for (int i = 0; i < startPos.Count; i++) {
             startPos[i] = transform.position.x;
         }

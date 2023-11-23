@@ -5,8 +5,6 @@ public class Player : MonoBehaviour {
     public Rigidbody2D rb;
     public LevelController levelController;
 
-    public Vector3 startPosition = new(9, 3, 0);
-
     [Header("Min - Max Variables")]
     public float maxHealth = 100;
     public float damagePower = 5f;
@@ -125,8 +123,6 @@ public class Player : MonoBehaviour {
     public void DieByFalling() {
         ResetPlayerStats();
         levelController.PlayerDied();
-
-        Debug.Log("Player is Dead by Falling");
     }
 
     private void Die() {
@@ -140,27 +136,22 @@ public class Player : MonoBehaviour {
             for (int i = 0; i < lastNumHitReceived; i++) {
                 Vector3 spawnPosition = deathPosition;
                 Quaternion spawnRotation = Quaternion.identity;
-                Vector3 healthScale = new(destroyedHealthPoints / 10, destroyedHealthPoints / 10, destroyedHealthPoints / 10);
 
                 GameObject instantiatedCollectableHealth = Instantiate(collectableHealth, spawnPosition, spawnRotation);
-                instantiatedCollectableHealth.transform.localScale = healthScale;
                 Rigidbody2D healthRb = instantiatedCollectableHealth.GetComponent<Rigidbody2D>();
+
+                CollectableHealth collectableHealthScript = instantiatedCollectableHealth.GetComponent<CollectableHealth>();
+                collectableHealthScript.UpdateHealthPoint(destroyedHealthPoints);
 
                 Vector2 randomDirection = Random.onUnitSphere;
                 randomDirection.x *= destroyedHealthPoints;
                 healthRb.AddForce(randomDirection * destroyedHealthForceMagnitude, ForceMode2D.Impulse);
-
-                CollectableHealth collectableHealthScript = instantiatedCollectableHealth.GetComponent<CollectableHealth>();
-                collectableHealthScript.healthPoints = destroyedHealthPoints;
             }
         }
-
-        Debug.Log("Player is Dead");
     }
 
     private void ResetPlayerStats() {
         rb.velocity = Vector2.zero;
-        transform.position = startPosition;
 
         health = maxHealth;
         numHitReceived = 0;

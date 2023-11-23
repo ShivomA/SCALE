@@ -172,14 +172,14 @@ MonoBehaviour:
   maxSize: 0.8
   minMass: 0.5
   maxMass: 4
-  minMoveForce: 3
-  maxMoveForce: 9
   minJumpForce: 2
   maxJumpForce: 25
+  minMoveForce: 10
+  maxMoveForce: 30
   minMaxJumpTime: 0.3
   maxMaxJumpTime: 0.5
-  minMaxMomentum: 5
-  maxMaxMomentum: 30
+  minMaxMomentum: 10
+  maxMaxMomentum: 50
   minplayerRadius: 0.35
   maxplayerRadius: 1.4
   minDecelerationRate: 2
@@ -200,10 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  cameraMovement: {fileID: 0}
-  playerController: {fileID: 0}
-  resetCameraPosition: {fileID: 0}
-  startPosition: {x: 9, y: 3, z: 0}
+  levelController: {fileID: 0}
   maxHealth: 100
   damagePower: 5
   minMaxHealth: 40
@@ -219,4 +216,3 @@ MonoBehaviour:
   destroyedHealthPoints: 3
   destroyedHealthForceMagnitude: 5
   collectableHealth: {fileID: 7763720707685568750, guid: 44cac4757ed814a1eb3c992ef24b8910, type: 3}
-  health: 0

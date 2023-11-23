@@ -8,6 +8,11 @@ public class CollectableHealth : MonoBehaviour {
         Destroy(gameObject, destroyTime);
     }
 
+    public void UpdateHealthPoint(float newHealthPoints) {
+        healthPoints = newHealthPoints;
+        transform.localScale = new(healthPoints / 5, healthPoints / 5, healthPoints / 5);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.collider.gameObject.CompareTag("Player")) {
             collision.collider.GetComponent<Player>().GainHealth(healthPoints);
