@@ -10,7 +10,8 @@ public class CollectableHealth : MonoBehaviour {
 
     public void UpdateHealthPoint(float newHealthPoints) {
         healthPoints = newHealthPoints;
-        transform.localScale = new(healthPoints / 5, healthPoints / 5, healthPoints / 5);
+        float newScale = Mathf.Clamp(healthPoints / 10, 0.175f, 0.4f);
+        transform.localScale = new(newScale, newScale, newScale);
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {

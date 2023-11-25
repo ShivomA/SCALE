@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7611137807851227436}
   m_Layer: 0
   m_Name: Level Controller
-  m_TagString: Untagged
+  m_TagString: Level Controller
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,8 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5832473da3c64c588fd7fe10bfdb858, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startPosition: {x: 9, y: 3, z: 0}
+  mainMenuPanel: {fileID: 0}
   cameraMovement: {fileID: 0}
   playerController: {fileID: 0}
   resetCameraPosition: {fileID: 0}
   unstablePlatforms: []
   unstableObjects: []
+  activeUnstablePlatforms: []
+  activeUnstableObjects: []

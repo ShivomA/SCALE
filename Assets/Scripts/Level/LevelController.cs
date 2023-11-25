@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour {
     public Vector3 startPosition = new(9, 3, 0);
 
+    public GameObject pauseMenuPanel;
     public CameraMovement cameraMovement;
     public PlayerController playerController;
     public ResetCameraPosition resetCameraPosition;
@@ -14,7 +16,12 @@ public class LevelController : MonoBehaviour {
     public List<GameObject> activeUnstablePlatforms;
     public List<GameObject> activeUnstableObjects;
 
+    private bool isPaused = false;
+
     private void Start() {
+        if (pauseMenuPanel == null) {
+            pauseMenuPanel = GameObject.FindGameObjectWithTag("Pause Menu Panel");
+        }
         if (cameraMovement == null) {
             cameraMovement = FindObjectOfType<CameraMovement>();
         }
@@ -34,6 +41,28 @@ public class LevelController : MonoBehaviour {
         }
 
         InitialiseLevelCompletely();
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape)){
+            TogglePause();
+        }
+    }
+
+    public void TogglePause() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            Time.timeScale = 0f;
+            pauseMenuPanel.SetActive(true);
+        } else {
+            Time.timeScale = 1f;
+            pauseMenuPanel.SetActive(false);
+        }
+    }
+
+    public void LoadScene(int index) {
+        SceneManager.LoadScene(index);
     }
 
     private void InitialiseLevelCompletely() {
