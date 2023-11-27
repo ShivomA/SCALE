@@ -31,7 +31,7 @@ public class RoamingDefendingEnemy : MonoBehaviour {
     private Color originalColor;
     private int numHitReceived = 0;
     private bool isDefending = false;
-    private float defendingStrength = 25;
+    private float defendingStrength = 50;
     private float damageVisualEffectImpactTime;
     private SpriteRenderer enemySpriteRenderer;
 
@@ -58,6 +58,7 @@ public class RoamingDefendingEnemy : MonoBehaviour {
         enemyHeight = sizeY * boundSizeY / 2 + 0.1f;
 
         currentHealth = maxHealth;
+        defendingStrength = maxDefendingStrength;
         rb = GetComponent<Rigidbody2D>();
 
         enemySpriteRenderer = GetComponent<SpriteRenderer>();
@@ -147,9 +148,11 @@ public class RoamingDefendingEnemy : MonoBehaviour {
                 playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
 
                 if (ShouldTakeDamage(player)) {
-                    numHitReceived += 1;
-                    TakeDamage((int)player.damagePower);
-                    damageVisualEffectImpactTime = damageVisualEffectTime;
+                    if (damageVisualEffectImpactTime <= 0) {
+                        numHitReceived += 1;
+                        TakeDamage((int)player.damagePower);
+                        damageVisualEffectImpactTime = damageVisualEffectTime;
+                    }
                 } else {
                     player.TakeDamage(damage);
                 }

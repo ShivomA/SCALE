@@ -174,8 +174,11 @@ MonoBehaviour:
   leftBoundary: 0
   rightBoundary: 0
   movingSpeed: 2
+  maxBearableMass: 1
   platformWidth: 6.5
   platformHeight: 1.1
   decelerationRate: 5
-  decelerationForceX: 5
+  collissionLayer:
+    serializedVersion: 2
+    m_Bits: 1344
   movingRight: 1

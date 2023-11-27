@@ -111,9 +111,11 @@ public class RoamingEnemy : MonoBehaviour {
                 playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
 
                 if (ShouldTakeDamage(player)) {
-                    numHitReceived += 1;
-                    TakeDamage((int)player.damagePower);
-                    damageVisualEffectImpactTime = damageVisualEffectTime;
+                    if (damageVisualEffectImpactTime <= 0) {
+                        numHitReceived += 1;
+                        TakeDamage((int)player.damagePower);
+                        damageVisualEffectImpactTime = damageVisualEffectTime;
+                    }
                 } else {
                     player.TakeDamage(damage);
                 }

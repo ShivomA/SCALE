@@ -5,10 +5,10 @@ public class UnstableHorizontalMovingPlatform : MonoBehaviour {
     public float rightBoundary;
 
     public float movingSpeed = 2f;
+    public float maxBearableMass = 1f;
     public float platformWidth = 6.5f;
     public float platformHeight = 1.1f;
-    public float decelerationRate = 5;
-    public float decelerationForceX = 5;
+    public float decelerationRate = 5f;
 
     public LayerMask collissionLayer;
 
@@ -26,8 +26,8 @@ public class UnstableHorizontalMovingPlatform : MonoBehaviour {
         platformHeight = sizeY * boundSizeY / 2 + 0.1f;
 
         if (leftBoundary == rightBoundary) {
-            leftBoundary = transform.position.y - 4;
-            rightBoundary = transform.position.y + 4;
+            leftBoundary = transform.position.x - 10;
+            rightBoundary = transform.position.x + 10;
         }
     }
 
@@ -37,19 +37,19 @@ public class UnstableHorizontalMovingPlatform : MonoBehaviour {
 
     private void MovementLogic() {
         if (movingRight) {
-            rb.velocity = new Vector2(movingSpeed, rb.velocity.y);
-            if (transform.position.y >= rightBoundary) {
+            rb.velocity = new Vector2(movingSpeed, Mathf.Min(rb.velocity.y, 0));
+            if (transform.position.x >= rightBoundary) {
                 Flip();
             }
         } else {
-            rb.velocity = new Vector2(-movingSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(-movingSpeed, Mathf.Min(rb.velocity.y, 0));
             if (transform.position.x <= leftBoundary) {
                 Flip();
             }
         }
 
-        if (Mathf.Abs(rb.velocity.y) > 0) {
-            float decelerationForceY = -rb.velocity.y * decelerationRate;
+        if (rb.velocity.y < 0) {
+            float decelerationForceY = -rb.velocity.y * decelerationRate + maxBearableMass * 10;
             rb.AddForce(Vector2.up * decelerationForceY);
         }
     }

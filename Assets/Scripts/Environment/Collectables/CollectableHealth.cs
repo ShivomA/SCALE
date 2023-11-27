@@ -5,6 +5,7 @@ public class CollectableHealth : MonoBehaviour {
     public float destroyTime = 120;
 
     void Start() {
+        UpdateHealthPoint(healthPoints);
         Destroy(gameObject, destroyTime);
     }
 

@@ -154,6 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 0}
   playerRb: {fileID: 0}
+  maxExtraView: 5
   playerOffsetX: 6
   playerOffsetY: 8
   cameraControlSpeed: 15

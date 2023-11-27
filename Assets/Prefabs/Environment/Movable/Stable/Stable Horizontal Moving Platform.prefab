@@ -178,5 +178,5 @@ MonoBehaviour:
   platformHeight: 1.1
   collissionLayer:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 1344
   movingRight: 0

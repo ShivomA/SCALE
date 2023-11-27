@@ -8,15 +8,16 @@ public class FollowingFlyingEnemy : MonoBehaviour {
     public float destroyedHealthPoints = 2.5f;
     public float destroyedHealthForceMagnitude = 5;
 
-    public float detectionRange = 8f;
+    public float detectionRange = 16f;
     public float normalMaxSpeedX = 2.0f;
     public float normalMaxSpeedY = 1.0f;
-    public float normalMoveForceX = 1.0f;
-    public float normalMoveForceY = 30.0f;
+    public float normalMoveForceX = 10.0f;
+    public float normalMoveForceY = 10.0f;
     public float followingMaxSpeedX = 4.0f;
-    public float followingMaxSpeedY = 2.0f;
-    public float followingMoveForceX = 2.0f;
-    public float followingMoveForceY = 60.0f;
+    public float followingMaxSpeedY = 3.0f;
+    public float retreatingMoveForce = 4.0f;
+    public float followingMoveForceX = 10.0f;
+    public float followingMoveForceY = 10.0f;
 
     public float topBoundary;
     public float leftBoundary;
@@ -92,7 +93,18 @@ public class FollowingFlyingEnemy : MonoBehaviour {
         } else { sawPlayer = false; }
 
         if (sawPlayer) {
-            Vector2 forceDirection = (playerTransform.position - transform.position).normalized;
+            Vector2 forceDirection;
+            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 5) {
+                forceDirection = (playerTransform.position - transform.position).normalized;
+                if (playerTransform.position.y - transform.position.y > 2.25) {
+                    float retreatingForceMagnitude = playerTransform.position.x - transform.position.x;
+                    float retreatingForceDirection = -Mathf.Sign(playerTransform.position.x - transform.position.x);
+                    forceDirection.x = retreatingForceDirection * (4 * retreatingMoveForce - retreatingMoveForce * retreatingForceMagnitude);
+                }
+            } else {
+                forceDirection = (playerTransform.position + Vector3.up - transform.position).normalized;
+            }
+
             rb.AddForce(new Vector2(forceDirection.x * followingMoveForceX, forceDirection.y * followingMoveForceY));
             rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
                 Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
@@ -169,9 +181,11 @@ public class FollowingFlyingEnemy : MonoBehaviour {
                 playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
 
                 if (ShouldTakeDamage(player)) {
-                    numHitReceived += 1;
-                    TakeDamage((int)player.damagePower);
-                    damageVisualEffectImpactTime = damageVisualEffectTime;
+                    if (damageVisualEffectImpactTime <= 0) {
+                        numHitReceived += 1;
+                        TakeDamage((int)player.damagePower);
+                        damageVisualEffectImpactTime = damageVisualEffectTime;
+                    }
                 } else {
                     player.TakeDamage(damage);
                 }

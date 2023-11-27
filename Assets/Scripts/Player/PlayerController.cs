@@ -20,8 +20,8 @@ public class PlayerController : MonoBehaviour {
     public float continuousJumpFactor = 2f;
     public float momentumDecreaseFactor = 0.8f;
 
-    public float minSize = 0.2f;
-    public float maxSize = 0.8f;
+    public float minSize = 0.3f;
+    public float maxSize = 0.7f;
     public float minMass = 0.5f;
     public float maxMass = 4.0f;
     public float minJumpForce = 2.0f;
@@ -51,6 +51,10 @@ public class PlayerController : MonoBehaviour {
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
         player = GetComponent<Player>();
+
+        float boundSizeX = GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+        minplayerRadius = minSize * boundSizeX / 2 + 0.1f;
+        maxplayerRadius = maxSize * boundSizeX / 2 + 0.1f;
 
         player.UpdateHealth(sizeScale, sizeScaleMin, sizeScaleMax);
         player.UpdateDamagePower(sizeScale, sizeScaleMin, sizeScaleMax);

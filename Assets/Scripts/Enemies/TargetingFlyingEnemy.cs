@@ -200,15 +200,17 @@ public class TargetingFlyingEnemy : MonoBehaviour {
                 playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
 
                 if (ShouldTakeDamage(player)) {
-                    steadyTime = 0;
-                    isSteady = false;
-                    CancelInvoke(nameof(MakeSteady));
-                    Invoke(nameof(MakeSteady), damageTakenCooldown);
-                    enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, 0);
-
-                    numHitReceived += 1;
-                    TakeDamage((int)player.damagePower);
-                    damageVisualEffectImpactTime = damageVisualEffectTime;
+                    //steadyTime = 0;
+                    //isSteady = false;
+                    //CancelInvoke(nameof(MakeSteady));
+                    //Invoke(nameof(MakeSteady), damageTakenCooldown);
+                    //enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, 0);
+                    
+                    if (damageVisualEffectImpactTime <= 0) {
+                        numHitReceived += 1;
+                        TakeDamage((int)player.damagePower);
+                        damageVisualEffectImpactTime = damageVisualEffectTime;
+                    }
                 } else {
                     player.TakeDamage(damage);
                 }

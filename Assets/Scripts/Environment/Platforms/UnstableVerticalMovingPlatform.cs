@@ -46,7 +46,7 @@ public class UnstableVerticalMovingPlatform : MonoBehaviour {
             }
         } else {
             rb.AddForce(Vector2.down * moveForceDown);
-            if (transform.position.x <= bottomBoundary) {
+            if (transform.position.y <= bottomBoundary) {
                 Flip();
             }
         }

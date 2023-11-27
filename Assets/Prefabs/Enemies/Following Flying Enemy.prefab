@@ -182,15 +182,16 @@ MonoBehaviour:
   maxHealth: 18
   destroyedHealthPoints: 2.5
   destroyedHealthForceMagnitude: 5
-  detectionRange: 8
+  detectionRange: 16
   normalMaxSpeedX: 2
   normalMaxSpeedY: 1
-  normalMoveForceX: 1
-  normalMoveForceY: 30
+  normalMoveForceX: 10
+  normalMoveForceY: 10
   followingMaxSpeedX: 4
-  followingMaxSpeedY: 2
-  followingMoveForceX: 2
-  followingMoveForceY: 60
+  followingMaxSpeedY: 3
+  retreatingMoveForce: 4
+  followingMoveForceX: 10
+  followingMoveForceY: 10
   topBoundary: 0
   leftBoundary: 0
   rightBoundary: 0

@@ -181,7 +181,7 @@ MonoBehaviour:
   collissionRayCount: 7
   collissionLayerTop:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
   collissionLayerBottom:
     serializedVersion: 2
     m_Bits: 1992

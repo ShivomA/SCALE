@@ -105,8 +105,6 @@ public class Player : MonoBehaviour {
 
             if (health <= 0)
                 Die();
-        } else {
-            Debug.Log("Player is Immune");
         }
     }
 
@@ -121,7 +119,7 @@ public class Player : MonoBehaviour {
     }
 
     public void DieByFalling() {
-        ResetPlayerStats();
+        ResetPlayerStats(resetHealth: false);
         levelController.PlayerDied();
     }
 
@@ -150,16 +148,19 @@ public class Player : MonoBehaviour {
         }
     }
 
-    private void ResetPlayerStats() {
+    private void ResetPlayerStats(bool resetHealth = true) {
         rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0;
 
-        health = maxHealth;
-        numHitReceived = 0;
-        canTakeDamage = true;
-        damageCooldown = damageCooldownTime;
+        if (resetHealth) {
+            health = maxHealth;
+            numHitReceived = 0;
+            canTakeDamage = true;
+            damageCooldown = damageCooldownTime;
 
-        currentMinHealth = health * minMaxHealth / maxHealth;
-        currentMaxHealth = health * maxMaxHealth / maxHealth;
-        healthText.text = (int)health + "/" + (int)maxHealth;
+            currentMinHealth = health * minMaxHealth / maxHealth;
+            currentMaxHealth = health * maxMaxHealth / maxHealth;
+            healthText.text = (int)health + "/" + (int)maxHealth;
+        }
     }
 }

@@ -8,9 +8,9 @@ public class RoamingFlyingEnemy : MonoBehaviour {
     public float destroyedHealthPoints = 2;
     public float destroyedHealthForceMagnitude = 5;
 
-    public float maxSpeed = 1.0f;
+    public float maxSpeed = 1.5f;
     public float moveForce = 2.0f;
-    public float verticalMoveForce = 30.0f;
+    public float verticalMoveForce = 10.0f;
 
     public float topBoundary;
     public float leftBoundary;
@@ -126,9 +126,11 @@ public class RoamingFlyingEnemy : MonoBehaviour {
                 playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
 
                 if (ShouldTakeDamage(player)) {
-                    numHitReceived += 1;
-                    TakeDamage((int)player.damagePower);
-                    damageVisualEffectImpactTime = damageVisualEffectTime;
+                    if (damageVisualEffectImpactTime <= 0) {
+                        numHitReceived += 1;
+                        TakeDamage((int)player.damagePower);
+                        damageVisualEffectImpactTime = damageVisualEffectTime;
+                    }
                 } else {
                     player.TakeDamage(damage);
                 }

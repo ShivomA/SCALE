@@ -36,7 +36,7 @@ public class StableHorizontalMovingPlatform : MonoBehaviour {
     private void MovementLogic() {
         if (movingRight) {
             rb.velocity = new Vector2(movingSpeed, 0);
-            if (transform.position.y >= rightBoundary) {
+            if (transform.position.x >= rightBoundary) {
                 Flip();
             }
         } else {

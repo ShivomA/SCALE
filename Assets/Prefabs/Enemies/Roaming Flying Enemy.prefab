@@ -182,9 +182,9 @@ MonoBehaviour:
   maxHealth: 16
   destroyedHealthPoints: 2
   destroyedHealthForceMagnitude: 5
-  maxSpeed: 1
+  maxSpeed: 1.5
   moveForce: 2
-  verticalMoveForce: 30
+  verticalMoveForce: 10
   topBoundary: 0
   leftBoundary: 0
   rightBoundary: 0

@@ -6,6 +6,7 @@ public class CameraMovement : MonoBehaviour {
     public Transform playerTransform;
     public Rigidbody2D playerRb;
 
+    public float maxExtraView = 5;
     public float playerOffsetX = 6;
     public float playerOffsetY = 8;
     public float cameraControlSpeed = 15;
@@ -26,6 +27,7 @@ public class CameraMovement : MonoBehaviour {
 
     private float sizeX;
     private float boundSizeX;
+    private float extraView = 0;
 
     private void Start() {
         if (playerTransform == null) { playerTransform = FindObjectOfType<Player>().transform; }
@@ -62,32 +64,62 @@ public class CameraMovement : MonoBehaviour {
             yPos = playerTransform.position.y - playerOffsetY + minYPos;
         } else { yPos = minYPos; }
 
-        if (movingRight) {
-            int multiplyingFactor = 1;
-            if (playerTransform.position.x > transform.position.x - playerOffsetX) { multiplyingFactor = 2; }
 
-            float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
+        if (Input.GetKey(KeyCode.E)) {
+            float xPos = transform.position.x + cameraControlSpeed * Time.deltaTime;
             if (xPos > playerTransform.position.x + playerOffsetX) {
-                xPos = playerTransform.position.x + playerOffsetX;
+                extraView = xPos - (playerTransform.position.x + playerOffsetX);
+                extraView = Mathf.Min(extraView, maxExtraView);
+                xPos = playerTransform.position.x + playerOffsetX + extraView;
+            }
+            if (xPos < playerTransform.position.x - playerOffsetX) {
+                extraView = playerTransform.position.x - playerOffsetX - xPos;
+            }
+            xPos = Mathf.Clamp(xPos, minXPos, maxXPos);
+
+            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
+            transform.position = desiredPosition;
+        } else if (Input.GetKey(KeyCode.Q)) {
+            float xPos = transform.position.x - cameraControlSpeed * Time.deltaTime;
+            if (xPos < playerTransform.position.x - playerOffsetX) {
+                extraView = playerTransform.position.x - playerOffsetX - xPos;
+                extraView = Mathf.Min(extraView, maxExtraView);
+                xPos = playerTransform.position.x - playerOffsetX - extraView;
+            }
+            if (xPos > playerTransform.position.x + playerOffsetX) {
+                extraView = xPos - (playerTransform.position.x + playerOffsetX);
             }
             xPos = Mathf.Clamp(xPos, minXPos, maxXPos);
 
             Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
             transform.position = desiredPosition;
         } else {
-            int multiplyingFactor = 1;
-            if (playerTransform.position.x < transform.position.x + playerOffsetX) { multiplyingFactor = 2; }
+            if (movingRight) {
+                int multiplyingFactor = 1;
+                if (playerTransform.position.x > transform.position.x - playerOffsetX - extraView) { multiplyingFactor = 2; }
 
-            float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
-            if (xPos < playerTransform.position.x - playerOffsetX) {
-                xPos = playerTransform.position.x - playerOffsetX;
+                float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
+                if (xPos > playerTransform.position.x + playerOffsetX + extraView) {
+                    xPos = playerTransform.position.x + playerOffsetX + extraView;
+                }
+                xPos = Mathf.Clamp(xPos, minXPos, maxXPos);
+
+                Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
+                transform.position = desiredPosition;
+            } else {
+                int multiplyingFactor = 1;
+                if (playerTransform.position.x < transform.position.x + playerOffsetX + extraView) { multiplyingFactor = 2; }
+
+                float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
+                if (xPos < playerTransform.position.x - playerOffsetX - extraView) {
+                    xPos = playerTransform.position.x - playerOffsetX - extraView;
+                }
+                xPos = Mathf.Clamp(xPos, minXPos, maxXPos);
+
+                Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
+                transform.position = desiredPosition;
             }
-            xPos = Mathf.Clamp(xPos, minXPos, maxXPos);
-
-            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
-            transform.position = desiredPosition;
         }
-
 
         for (int i = 0; i < Layer_Objects.Count; i++) {
             float temp = transform.position.x * (1 - layerSpeedX[i]);
@@ -103,27 +135,6 @@ public class CameraMovement : MonoBehaviour {
                 startPos[i] -= boundSizeX * sizeX;
             }
 
-        }
-
-        if (Input.GetKey(KeyCode.E)) {
-            float xPos = transform.position.x + cameraControlSpeed * Time.deltaTime;
-            if (xPos > playerTransform.position.x + playerOffsetX) {
-                xPos = playerTransform.position.x + playerOffsetX;
-            }
-            xPos = Mathf.Clamp(xPos, minXPos, maxXPos);
-
-            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
-            transform.position = desiredPosition;
-        }
-        if (Input.GetKey(KeyCode.Q)) {
-            float xPos = transform.position.x - cameraControlSpeed * Time.deltaTime;
-            if (xPos < playerTransform.position.x - playerOffsetX) {
-                xPos = playerTransform.position.x - playerOffsetX;
-            }
-            xPos = Mathf.Clamp(xPos, minXPos, maxXPos);
-
-            Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
-            transform.position = desiredPosition;
         }
     }
 }
