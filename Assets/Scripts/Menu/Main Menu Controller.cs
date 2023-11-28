@@ -8,8 +8,10 @@ public class MainMenuController : MonoBehaviour {
     public GameObject hintsMenuPanel;
 
     private void Start() {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        levelSelectionMenuPanel.SetActive(false);
+        contolsMenuPanel.SetActive(false);
+        hintsMenuPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
     }
 
     public void LoadScene(int index) {

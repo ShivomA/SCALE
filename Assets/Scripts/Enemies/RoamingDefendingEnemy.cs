@@ -39,6 +39,7 @@ public class RoamingDefendingEnemy : MonoBehaviour {
     private bool movingRight = true;
 
     public Player player;
+    public GameObject spikes;
     public Transform playerTransform;
     public GameObject collectableHealth;
     public LayerMask playerLayer;
@@ -49,6 +50,11 @@ public class RoamingDefendingEnemy : MonoBehaviour {
 
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+
+        if (spikes == null)
+            spikes = transform.GetChild(0).gameObject;
+
+        spikes.SetActive(false);
 
         float sizeX = transform.localScale.x;
         float sizeY = transform.localScale.y;
@@ -94,11 +100,13 @@ public class RoamingDefendingEnemy : MonoBehaviour {
 
             if (steadyTime > defendCooldown && defendingStrength > 0) {
                 isDefending = true;
+                spikes.SetActive(true);
                 enemySpriteRenderer.color = Color.Lerp(originalColor, defendingColor, defendingStrength / maxDefendingStrength);
             }
         } else {
             if (steadyTime > 0) { steadyTime -= Time.deltaTime; }
             isDefending = false;
+            spikes.SetActive(false);
             enemySpriteRenderer.color = Color.Lerp(originalColor, defendingColor, steadyTime / defendCooldown);
 
             if (movingRight) {
@@ -128,11 +136,13 @@ public class RoamingDefendingEnemy : MonoBehaviour {
         if (damageVisualEffectImpactTime > 0) {
             damageVisualEffectImpactTime -= Time.deltaTime;
 
-            if (damageVisualEffectImpactTime > 0) {
-                float lerpValue = Mathf.PingPong(Time.time * 5.0f, 1.0f);
-                enemySpriteRenderer.color = Color.Lerp(originalColor, damageColor, lerpValue);
-            } else {
-                enemySpriteRenderer.color = originalColor;
+            if (!isDefending) {
+                if (damageVisualEffectImpactTime > 0) {
+                    float lerpValue = Mathf.PingPong(Time.time * 5.0f, 1.0f);
+                    enemySpriteRenderer.color = Color.Lerp(originalColor, damageColor, lerpValue);
+                } else {
+                    enemySpriteRenderer.color = originalColor;
+                }
             }
         }
     }
@@ -161,30 +171,37 @@ public class RoamingDefendingEnemy : MonoBehaviour {
     }
 
     private bool ShouldTakeDamage(Player player) {
-        if (isDefending && defendingStrength > 0) {
-            defendingStrength -= player.damagePower;
-            enemySpriteRenderer.color = Color.Lerp(originalColor, defendingColor, defendingStrength / maxDefendingStrength);
+        float positionIncrement = enemyWidth / (collissionRayCount - 1);
 
-            if (defendingStrength <= 0)
-                isDefending = false;
+        for (float i = 0; i < collissionRayCount; i++) {
+            if (i == 0)
+                i = 0.5f;
+            if (i == collissionRayCount - 1)
+                i = collissionRayCount - 1.5f;
 
-            return false;
-        } else {
-            float positionIncrement = enemyWidth / (collissionRayCount - 1);
+            float originPositionX = transform.position.x - enemyWidth / 2.0f + i * positionIncrement;
+            Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
 
-            for (int i = 0; i < collissionRayCount; i++) {
-                float originPositionX = transform.position.x - enemyWidth / 2.0f + i * positionIncrement;
-                Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
+            if (Physics2D.Raycast(originPosition, Vector2.up, enemyHeight, playerLayer)) {
+                if (player.damagePower >= strength) {
+                    if (isDefending && defendingStrength > 0) {
+                        defendingStrength -= player.damagePower;
+                        enemySpriteRenderer.color = Color.Lerp(originalColor, defendingColor, defendingStrength / maxDefendingStrength);
 
-                if (Physics2D.Raycast(originPosition, Vector2.up, enemyHeight, playerLayer)) {
-                    if (player.damagePower >= strength) {
-                        return true;
+                        if (defendingStrength <= 0) {
+                            isDefending = false;
+                            spikes.SetActive(false);
+                        }
+
+                        return false;
                     }
+                    return true;
                 }
             }
-
-            return false;
         }
+
+        return false;
+
     }
 
     public void TakeDamage(int damage) {

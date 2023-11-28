@@ -43,9 +43,8 @@ public class LevelController : MonoBehaviour {
         InitialiseLevelCompletely();
     }
 
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape)){
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape)) {
             TogglePause();
         }
     }
@@ -62,10 +61,9 @@ public class LevelController : MonoBehaviour {
     }
 
     public void LoadScene(int index) {
-        if(index == 0) {
-            isPaused = false;
-            Time.timeScale = 1f;
-        }
+        isPaused = false;
+        Time.timeScale = 1f;
+
         SceneManager.LoadScene(index);
     }
 

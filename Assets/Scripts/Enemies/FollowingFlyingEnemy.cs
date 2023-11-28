@@ -185,6 +185,16 @@ public class FollowingFlyingEnemy : MonoBehaviour {
                         numHitReceived += 1;
                         TakeDamage((int)player.damagePower);
                         damageVisualEffectImpactTime = damageVisualEffectTime;
+
+                        Vector2 retreatingForce;
+                        float retreatingForceMagnitude = playerTransform.position.x - transform.position.x;
+                        float retreatingForceDirection = -Mathf.Sign(playerTransform.position.x - transform.position.x);
+
+                        retreatingForce.x = retreatingForceDirection * (8 * retreatingMoveForce - retreatingMoveForce * retreatingForceMagnitude);
+
+                        rb.AddForce(new Vector2(retreatingForce.x * followingMoveForceX, 0), ForceMode2D.Impulse);
+                        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
+                            Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
                     }
                 } else {
                     player.TakeDamage(damage);

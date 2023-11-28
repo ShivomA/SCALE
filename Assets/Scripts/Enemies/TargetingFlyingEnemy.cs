@@ -8,18 +8,21 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     public float destroyedHealthPoints = 3.5f;
     public float destroyedHealthForceMagnitude = 5;
 
+    public float hitCooldown = 1.0f;
     public float detectionRange = 15f;
     public float attackCooldown = 1.2f;
-    public float attackDuration = 3.0f;
+    public float attackDuration = 2.0f;
     public float normalMaxSpeedX = 2.0f;
     public float normalMaxSpeedY = 1.0f;
-    public float normalMoveForceX = 1.0f;
+    public float normalMoveForceX = 10.0f;
     public float normalMoveForceY = 30.0f;
-    public float followingMaxSpeedX = 8.0f;
-    public float followingMaxSpeedY = 8.0f;
-    public float damageTakenCooldown = 1.2f;
-    public float followingMoveForceX = 20.0f;
-    public float followingMoveForceY = 40.0f;
+    public float decelerationForce = 10.0f;
+    public float playerHeightOffset = 3.0f;
+    public float takePositionForce = 150.0f;
+    public float followingMaxSpeedX = 10.0f;
+    public float followingMaxSpeedY = 10.0f;
+    public float followingMoveForceX = 30.0f;
+    public float followingMoveForceY = 30.0f;
 
     public float topBoundary;
     public float leftBoundary;
@@ -36,7 +39,7 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     private float steadyTime;
     private int currentHealth;
     private Color originalColor;
-    private bool isSteady = true;
+    public bool isSteady = true;
     private int numHitReceived = 0;
     private float damageVisualEffectImpactTime;
     private SpriteRenderer enemySpriteRenderer;
@@ -48,10 +51,11 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     public Player player;
     public Transform playerTransform;
     public GameObject collectableHealth;
+    public LayerMask collissionLayer;
     public LayerMask playerLayer;
 
     private void Start() {
-        if (player == null) 
+        if (player == null)
             player = FindObjectOfType<Player>();
 
         if (playerTransform == null)
@@ -101,24 +105,40 @@ public class TargetingFlyingEnemy : MonoBehaviour {
         } else { sawPlayer = false; }
 
         if (sawPlayer) {
-            if (isSteady) { rb.velocity = Vector2.zero; }
-
-            if (isSteady && steadyTime < attackCooldown) {
-                enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, steadyTime / attackCooldown);
+            if (transform.position.y > playerTransform.position.y + playerHeightOffset) {
+                if (rb.velocity.y > 0) {
+                    rb.AddForce(-rb.velocity.normalized * decelerationForce);
+                }
             }
 
-            if (steadyTime >= attackCooldown && isSteady) {
-                Vector2 forceDirection = (playerTransform.position - transform.position).normalized;
-                rb.AddForce(new Vector2(forceDirection.x * followingMoveForceX, forceDirection.y * followingMoveForceY), ForceMode2D.Impulse);
+            if (isSteady) {
+                if (transform.position.y < playerTransform.position.y + playerHeightOffset) {
+                    rb.AddForce(takePositionForce * Vector2.up);
 
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
-                    Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
+                    steadyTime = 0;
+                    isSteady = false;
+                    CancelInvoke(nameof(MakeSteady));
+                    Invoke(nameof(MakeSteady), hitCooldown);
+                    enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, 0);
+                } else {
+                    rb.velocity = Vector2.zero;
 
-                steadyTime = 0;
-                isSteady = false;
-                CancelInvoke(nameof(MakeSteady));
-                Invoke(nameof(MakeSteady), attackDuration);
-                enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, 0);
+                    if (steadyTime < attackCooldown) {
+                        enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, steadyTime / attackCooldown);
+                    } else {
+                        Vector2 forceDirection = (playerTransform.position - transform.position).normalized;
+                        rb.AddForce(new Vector2(forceDirection.x * followingMoveForceX, forceDirection.y * followingMoveForceY), ForceMode2D.Impulse);
+
+                        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
+                            Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
+
+                        steadyTime = 0;
+                        isSteady = false;
+                        CancelInvoke(nameof(MakeSteady));
+                        Invoke(nameof(MakeSteady), attackDuration);
+                        enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, 0);
+                    }
+                }
             }
         } else {
             bool outOfBoundary = false;
@@ -161,7 +181,6 @@ public class TargetingFlyingEnemy : MonoBehaviour {
             rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -normalMaxSpeedX, normalMaxSpeedX),
                 Mathf.Clamp(rb.velocity.y, -normalMaxSpeedY, normalMaxSpeedY));
         }
-
     }
 
     private void Flip() {
@@ -173,7 +192,6 @@ public class TargetingFlyingEnemy : MonoBehaviour {
 
     private void MakeSteady() {
         isSteady = true;
-        rb.velocity = Vector2.zero;
     }
 
     private void DamageVisual() {
@@ -190,6 +208,11 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
+        if (((1 << collision.gameObject.layer) & collissionLayer) != 0) {
+            CancelInvoke(nameof(MakeSteady));
+            Invoke(nameof(MakeSteady), hitCooldown);
+        }
+
         if (collision.gameObject.CompareTag("Player")) {
             if (collision.gameObject.TryGetComponent(out Player player)) {
                 Transform playerTransform = collision.gameObject.transform;
@@ -200,12 +223,6 @@ public class TargetingFlyingEnemy : MonoBehaviour {
                 playerRb.AddForce(new Vector2(forceDirection.x * player.damageTakenForceX, forceDirection.y * player.damageTakenForceY), ForceMode2D.Impulse);
 
                 if (ShouldTakeDamage(player)) {
-                    //steadyTime = 0;
-                    //isSteady = false;
-                    //CancelInvoke(nameof(MakeSteady));
-                    //Invoke(nameof(MakeSteady), damageTakenCooldown);
-                    //enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, 0);
-                    
                     if (damageVisualEffectImpactTime <= 0) {
                         numHitReceived += 1;
                         TakeDamage((int)player.damagePower);
@@ -221,7 +238,12 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     private bool ShouldTakeDamage(Player player) {
         float positionIncrement = enemyWidth / (collissionRayCount - 1);
 
-        for (int i = 1; i < collissionRayCount - 1; i++) {
+        for (float i = 0; i < collissionRayCount; i++) {
+            if (i == 0)
+                i = 0.5f;
+            if (i == collissionRayCount - 1)
+                i = collissionRayCount - 1.5f;
+
             float originPositionX = transform.position.x - enemyWidth / 2.0f + i * positionIncrement;
             Vector3 originPosition = new(originPositionX, transform.position.y, transform.position.z);
 

@@ -186,7 +186,7 @@ MonoBehaviour:
   maxDecelerationRate: 8
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1984
+    m_Bits: 4032
 --- !u!114 &1237232862670569834
 MonoBehaviour:
   m_ObjectHideFlags: 0

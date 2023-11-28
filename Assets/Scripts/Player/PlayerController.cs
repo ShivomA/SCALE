@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour {
     private float playerRadius = 0.9f;
     private float decelerationRate = 5.0f;
 
-    private float sizeScale = 5.0f;
+    public float sizeScale = 5.0f;
     private float sizeScaleMin = 1.0f;
     private float sizeScaleMax = 10.0f;
 

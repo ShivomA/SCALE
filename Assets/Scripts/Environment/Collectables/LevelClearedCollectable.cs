@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelClearedCollectable : MonoBehaviour {
+    public GameObject wonMenuPanel;
+
     public List<GameObject> chains;
     public List<GameObject> enemies;
 
@@ -63,19 +66,37 @@ public class LevelClearedCollectable : MonoBehaviour {
         GetComponent<PolygonCollider2D>().isTrigger = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
+    private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Player")) {
             wonText.SetActive(true);
             Invoke(nameof(HideWonMessage), 3);
             GetComponent<SpriteRenderer>().enabled = false;
-            Destroy(gameObject, 3.5f);
+
+            if (wonMenuPanel) {
+                StartCoroutine(ScaleDownCoroutine(collision.transform, collision.gameObject.GetComponent<PlayerController>()));
+            }
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.gameObject.CompareTag("Player")){
+    IEnumerator ScaleDownCoroutine(Transform playerTransform, PlayerController playerController) {
+        float scaleSpeed = 0.2f;
+
+        while (playerTransform.localScale.x > 0 && playerTransform.localScale.y > 0) {
+            float newScale = Mathf.Max(playerTransform.localScale.x - scaleSpeed * Time.deltaTime, 0);
+            playerTransform.localScale = new Vector3(newScale, newScale, newScale);
+
+            playerController.sizeScale = newScale * 10;
+
+            yield return null;
+        }
+
+        playerController.enabled = false;
+        wonMenuPanel.SetActive(true);
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.collider.gameObject.CompareTag("Player")) {
             hintText.SetActive(true);
             Invoke(nameof(HideHint), 3);
         }

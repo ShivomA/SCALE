@@ -182,18 +182,21 @@ MonoBehaviour:
   maxHealth: 16
   destroyedHealthPoints: 3.5
   destroyedHealthForceMagnitude: 5
+  hitCooldown: 0.6
   detectionRange: 15
   attackCooldown: 1.2
-  attackDuration: 3
+  attackDuration: 2
   normalMaxSpeedX: 2
   normalMaxSpeedY: 1
-  normalMoveForceX: 1
+  normalMoveForceX: 10
   normalMoveForceY: 30
-  followingMaxSpeedX: 8
-  followingMaxSpeedY: 8
-  damageTakenCooldown: 1.2
-  followingMoveForceX: 20
-  followingMoveForceY: 40
+  decelerationForce: 10
+  playerHeightOffset: 3
+  takePositionForce: 150
+  followingMaxSpeedX: 10
+  followingMaxSpeedY: 10
+  followingMoveForceX: 30
+  followingMoveForceY: 30
   topBoundary: 0
   leftBoundary: 0
   rightBoundary: 0
@@ -201,9 +204,13 @@ MonoBehaviour:
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   damageVisualEffectTime: 2
   attackingColor: {r: 0.5019608, g: 0, b: 1, a: 1}
+  isSteady: 1
   player: {fileID: 0}
   playerTransform: {fileID: 0}
   collectableHealth: {fileID: 7763720707685568750, guid: c0ce2a38a69d74729a0ab98e4a1a462b, type: 3}
+  collissionLayer:
+    serializedVersion: 2
+    m_Bits: 4040
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
