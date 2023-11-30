@@ -2,17 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Level2BossSpawner : MonoBehaviour {
-    public List<GameObject> enemiesToSpawn;
+    public List<TargetingFlyingEnemy> enemiesToSpawn;
 
     void Start() {
-        foreach (GameObject enemy in enemiesToSpawn) {
-            enemy.SetActive(false);
+        foreach (TargetingFlyingEnemy enemy in enemiesToSpawn) {
+            enemy.enabled = false;
         }
     }
 
     private void OnDestroy() {
-        foreach (GameObject enemy in enemiesToSpawn) {
-            enemy.SetActive(true);
+        foreach (TargetingFlyingEnemy enemy in enemiesToSpawn) {
+            enemy.enabled = true;
         }
     }
 }

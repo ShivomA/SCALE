@@ -8,7 +8,7 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     public float destroyedHealthPoints = 3.5f;
     public float destroyedHealthForceMagnitude = 5;
 
-    public float hitCooldown = 1.0f;
+    public float hitCooldown = 0.6f;
     public float detectionRange = 15f;
     public float attackCooldown = 1.2f;
     public float attackDuration = 2.0f;
