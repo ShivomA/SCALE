@@ -18,9 +18,8 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     public float normalMoveForceY = 30.0f;
     public float decelerationForce = 10.0f;
     public float playerHeightOffset = 3.0f;
+    public float followingMaxSpeed = 20.0f;
     public float takePositionForce = 150.0f;
-    public float followingMaxSpeedX = 10.0f;
-    public float followingMaxSpeedY = 10.0f;
     public float followingMoveForceX = 30.0f;
     public float followingMoveForceY = 30.0f;
 
@@ -54,9 +53,15 @@ public class TargetingFlyingEnemy : MonoBehaviour {
     public LayerMask collissionLayer;
     public LayerMask playerLayer;
 
+    public SoundManager soundManager;
+    private bool isFocusSoundPlaying = false;
+
     private void Start() {
         if (player == null)
             player = FindObjectOfType<Player>();
+
+        if (soundManager == null)
+            soundManager = FindObjectOfType<SoundManager>();
 
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -107,12 +112,22 @@ public class TargetingFlyingEnemy : MonoBehaviour {
         if (sawPlayer) {
             if (transform.position.y > playerTransform.position.y + playerHeightOffset) {
                 if (rb.velocity.y > 0) {
+                    if (isFocusSoundPlaying) {
+                        isFocusSoundPlaying = false;
+                        soundManager.StopTargetingEnemyFocusSound();
+                    }
+
                     rb.AddForce(-rb.velocity.normalized * decelerationForce);
                 }
             }
 
             if (isSteady) {
                 if (transform.position.y < playerTransform.position.y + playerHeightOffset) {
+                    if (isFocusSoundPlaying) {
+                        isFocusSoundPlaying = false;
+                        soundManager.StopTargetingEnemyFocusSound();
+                    }
+
                     rb.AddForce(takePositionForce * Vector2.up);
 
                     steadyTime = 0;
@@ -124,13 +139,22 @@ public class TargetingFlyingEnemy : MonoBehaviour {
                     rb.velocity = Vector2.zero;
 
                     if (steadyTime < attackCooldown) {
+                        if (!isFocusSoundPlaying) {
+                            isFocusSoundPlaying = true;
+                            soundManager.StopTargetingEnemyFocusSound();
+                            soundManager.PlayTargetingEnemyFocusSound();
+                        }
                         enemySpriteRenderer.color = Color.Lerp(originalColor, attackingColor, steadyTime / attackCooldown);
                     } else {
-                        Vector2 forceDirection = (playerTransform.position - transform.position).normalized;
+                        if (isFocusSoundPlaying) {
+                            isFocusSoundPlaying = false;
+                            soundManager.StopTargetingEnemyFocusSound();
+                        }
+
+                        Vector2 forceDirection = (playerTransform.position + Vector3.up - transform.position).normalized;
                         rb.AddForce(new Vector2(forceDirection.x * followingMoveForceX, forceDirection.y * followingMoveForceY), ForceMode2D.Impulse);
 
-                        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
-                            Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
+                        rb.velocity = rb.velocity.normalized * followingMaxSpeed;
 
                         steadyTime = 0;
                         isSteady = false;
@@ -141,6 +165,12 @@ public class TargetingFlyingEnemy : MonoBehaviour {
                 }
             }
         } else {
+            if (isFocusSoundPlaying) {
+                isFocusSoundPlaying = false;
+                soundManager.StopTargetingEnemyFocusSound();
+            }
+
+            steadyTime = 0;
             bool outOfBoundary = false;
 
             if (transform.position.x < leftBoundary) {
@@ -161,8 +191,6 @@ public class TargetingFlyingEnemy : MonoBehaviour {
             }
 
             if (!outOfBoundary) {
-                steadyTime = 0;
-
                 float yForce = (Mathf.PingPong(Time.time, 1.0f) - 0.5f) * normalMoveForceY;
 
                 if (movingRight) {
@@ -262,10 +290,14 @@ public class TargetingFlyingEnemy : MonoBehaviour {
 
         if (currentHealth <= 0) {
             Die();
+        } else {
+            soundManager.PlayEnemyDamageSound();
         }
     }
 
     private void Die() {
+        soundManager.PlayEnemyDeathSound();
+
         if (collectableHealth != null) {
             for (int i = 0; i < numHitReceived; i++) {
                 Vector3 spawnPosition = transform.position;

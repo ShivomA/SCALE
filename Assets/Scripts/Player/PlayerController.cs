@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour {
     public float continuousJumpFactor = 2f;
     public float momentumDecreaseFactor = 0.8f;
 
+    [Header("Min - Max Variables")]
     public float minSize = 0.3f;
     public float maxSize = 0.7f;
     public float minMass = 0.5f;
@@ -48,9 +49,14 @@ public class PlayerController : MonoBehaviour {
     private float moveInput = 0.0f;
     private bool continuousJumpInput = false;
 
+    public SoundManager soundManager;
+
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
         player = GetComponent<Player>();
+
+        if (soundManager == null)
+            soundManager = FindObjectOfType<SoundManager>();
 
         float boundSizeX = GetComponent<SpriteRenderer>().sprite.bounds.size.x;
         minplayerRadius = minSize * boundSizeX / 2 + 0.1f;
@@ -110,6 +116,7 @@ public class PlayerController : MonoBehaviour {
         bool jumpInput = Input.GetButtonDown("Jump");
 
         if (jumpInput && isGrounded && !isJumping) {
+            soundManager.PlayJumpSound();
             isJumping = true;
             jumpTime = 0.0f;
 

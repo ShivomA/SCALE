@@ -16,7 +16,12 @@ public class LevelClearedCollectable : MonoBehaviour {
     public GameObject wonText;
     public GameObject hintText;
 
-    void Start() {
+    public SoundManager soundManager;
+
+    private void Start() {
+        if (soundManager == null)
+            soundManager = FindObjectOfType<SoundManager>();
+
         if (enemies.Count == 0)
             enemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
 
@@ -68,6 +73,8 @@ public class LevelClearedCollectable : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Player")) {
+            soundManager.PlayLevelCompletionSound();
+
             wonText.SetActive(true);
             Invoke(nameof(HideWonMessage), 3);
             GetComponent<SpriteRenderer>().enabled = false;

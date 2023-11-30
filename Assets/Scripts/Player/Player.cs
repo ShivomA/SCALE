@@ -37,10 +37,17 @@ public class Player : MonoBehaviour {
     private float currentMinHealth;
     private float currentMaxHealth;
 
+    public SoundManager soundManager;
+
     private void Start() {
         if (rb == null) {
             rb = GetComponent<Rigidbody2D>();
         }
+
+        if (soundManager == null) {
+            soundManager = FindObjectOfType<SoundManager>();
+        }
+
         if (levelController == null) {
             levelController = FindObjectOfType<LevelController>();
         }
@@ -93,6 +100,8 @@ public class Player : MonoBehaviour {
 
     public void TakeDamage(int damage) {
         if (canTakeDamage) {
+            soundManager.PlayPlayerDamageSound();
+
             numHitReceived += 1;
 
             health -= damage;
@@ -120,10 +129,14 @@ public class Player : MonoBehaviour {
 
     public void DieByFalling() {
         ResetPlayerStats(resetHealth: false);
+        soundManager.PlayPlayerDeathByFallingSound();
+
         levelController.PlayerDied();
     }
 
     private void Die() {
+        soundManager.PlayPlayerDeathSound();
+
         int lastNumHitReceived = numHitReceived;
         Vector3 deathPosition = transform.position;
 

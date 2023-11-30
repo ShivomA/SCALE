@@ -440,7 +440,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1065211668785593289, guid: 2476ae483e1c54faa9a998d30b711a8f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 456
+      value: 470
       objectReference: {fileID: 0}
     - target: {fileID: 1065211668785593289, guid: 2476ae483e1c54faa9a998d30b711a8f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -488,7 +488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8684661546655783142, guid: 2476ae483e1c54faa9a998d30b711a8f, type: 3}
       propertyPath: m_Name
-      value: Targeting Flying Enemy (2)
+      value: 470, 7.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -531,6 +531,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 611949024}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &159624468
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4806154249146118807, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_Name
+      value: SoundManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7890892942436532188, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6f84e69b3f17f4d339db1965caa4945f, type: 3}
 --- !u!1001 &162321769
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1670,7 +1727,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8684661546655783142, guid: 2476ae483e1c54faa9a998d30b711a8f, type: 3}
       propertyPath: m_Name
-      value: Targeting Flying Enemy
+      value: 450, 6.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4742,7 +4799,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1065211668785593289, guid: 2476ae483e1c54faa9a998d30b711a8f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 445
+      value: 458
       objectReference: {fileID: 0}
     - target: {fileID: 1065211668785593289, guid: 2476ae483e1c54faa9a998d30b711a8f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4790,7 +4847,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8684661546655783142, guid: 2476ae483e1c54faa9a998d30b711a8f, type: 3}
       propertyPath: m_Name
-      value: Targeting Flying Enemy (1)
+      value: 458, 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9643,6 +9700,18 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2914575081568026754, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2914575081568026754, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2914575081568026754, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2914575081568026754, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9
       objectReference: {fileID: 0}
@@ -9681,6 +9750,46 @@ PrefabInstance:
     - target: {fileID: 2914575081568026754, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696057174478419345, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: maxSize
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696057174478419345, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: minSize
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8797679498402787384, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8797679498402787384, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_Size.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8797679498402787384, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b1723da61c49342d58cdbb96bb2dfdad, type: 3}
+    - target: {fileID: 8797679498402787384, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8250525
+      objectReference: {fileID: 0}
+    - target: {fileID: 8797679498402787384, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_Color.g
+      value: 0.2216981
+      objectReference: {fileID: 0}
+    - target: {fileID: 8797679498402787384, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_Color.r
+      value: 0.79607844
+      objectReference: {fileID: 0}
+    - target: {fileID: 8797679498402787384, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8895691216949383867, guid: a0bcb4179cdac4e16832441da56ffc91, type: 3}
+      propertyPath: m_Radius
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10110,3 +10219,4 @@ SceneRoots:
   - {fileID: 2382254977669684451}
   - {fileID: 1032711222}
   - {fileID: 418711698}
+  - {fileID: 159624468}

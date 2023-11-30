@@ -55,9 +55,14 @@ public class JumpingEnemy : MonoBehaviour {
     public LayerMask playerLayer;
     public LayerMask groundLayer;
 
+    public SoundManager soundManager;
+
     private void Start() {
         if (player == null)
             player = FindObjectOfType<Player>();
+
+        if (soundManager == null)
+            soundManager = FindObjectOfType<SoundManager>();
 
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -101,6 +106,8 @@ public class JumpingEnemy : MonoBehaviour {
         }
 
         if (shouldJump) {
+            soundManager.PlayJumpingEnemyJumpSound();
+
             float xForce = followingMoveForce * (playerTransform.position.x - transform.position.x);
             rb.AddForce(new Vector2(xForce, jumpForce), ForceMode2D.Impulse);
 
@@ -288,10 +295,14 @@ public class JumpingEnemy : MonoBehaviour {
 
         if (currentHealth <= 0) {
             Die();
+        } else {
+            soundManager.PlayEnemyDamageSound();
         }
     }
 
     private void Die() {
+        soundManager.PlayEnemyDeathSound();
+
         if (collectableHealth != null) {
             for (int i = 0; i < numHitReceived; i++) {
                 Vector3 spawnPosition = transform.position;

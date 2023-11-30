@@ -44,9 +44,14 @@ public class RoamingDefendingEnemy : MonoBehaviour {
     public GameObject collectableHealth;
     public LayerMask playerLayer;
 
+    public SoundManager soundManager;
+
     private void Start() {
         if (player == null)
             player = FindObjectOfType<Player>();
+
+        if (soundManager == null)
+            soundManager = FindObjectOfType<SoundManager>();
 
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -209,10 +214,14 @@ public class RoamingDefendingEnemy : MonoBehaviour {
 
         if (currentHealth <= 0) {
             Die();
+        } else {
+            soundManager.PlayEnemyDamageSound();
         }
     }
 
     private void Die() {
+        soundManager.PlayEnemyDeathSound();
+
         if (collectableHealth != null) {
             for (int i = 0; i < numHitReceived; i++) {
                 Vector3 spawnPosition = transform.position;

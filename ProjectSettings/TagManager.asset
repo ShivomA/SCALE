@@ -9,6 +9,7 @@ TagManager:
   - Level Completion Star
   - Pause Menu Panel
   - Level Controller
+  - Sound Manager
   layers:
   - Default
   - TransparentFX

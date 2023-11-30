@@ -10,12 +10,15 @@ public class RoamingEnemy : MonoBehaviour {
 
     public float maxSpeed = 1.0f;
     public float moveForce = 5.0f;
+    public float retreatingMaxSpeed = 6.0f;
+    public float retreatingMoveForce = 12.0f;
 
     public float leftBoundary;
     public float rightBoundary;
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
+    private bool isAttacked;
     private float enemyWidth;
     private float enemyHeight;
     private int collissionRayCount = 5;
@@ -33,9 +36,14 @@ public class RoamingEnemy : MonoBehaviour {
     public GameObject collectableHealth;
     public LayerMask playerLayer;
 
+    public SoundManager soundManager;
+
     private void Start() {
         if (player == null)
             player = FindObjectOfType<Player>();
+
+        if (soundManager == null)
+            soundManager = FindObjectOfType<SoundManager>();
 
         float sizeX = transform.localScale.x;
         float sizeY = transform.localScale.y;
@@ -77,7 +85,8 @@ public class RoamingEnemy : MonoBehaviour {
             }
         }
 
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), rb.velocity.y);
+        if (!isAttacked)
+            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), rb.velocity.y);
     }
 
     private void Flip() {
@@ -116,11 +125,27 @@ public class RoamingEnemy : MonoBehaviour {
                         TakeDamage((int)player.damagePower);
                         damageVisualEffectImpactTime = damageVisualEffectTime;
                     }
+
+                    isAttacked = true;
+                    Invoke(nameof(ResetIsAttacked), 1f);
+
+                    Vector2 retreatingForce;
+                    float retreatingForceMagnitude = playerTransform.position.x - transform.position.x;
+                    float retreatingForceDirection = -Mathf.Sign(playerTransform.position.x - transform.position.x);
+
+                    retreatingForce.x = retreatingForceDirection * (8 * retreatingMoveForce - retreatingMoveForce * retreatingForceMagnitude);
+
+                    rb.AddForce(new Vector2(retreatingForce.x * moveForce, 0), ForceMode2D.Impulse);
+                    rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -retreatingMaxSpeed, retreatingMaxSpeed), 0);
                 } else {
                     player.TakeDamage(damage);
                 }
             }
         }
+    }
+
+    private void ResetIsAttacked() {
+        isAttacked = false;
     }
 
     private bool ShouldTakeDamage(Player player) {
@@ -145,10 +170,14 @@ public class RoamingEnemy : MonoBehaviour {
 
         if (currentHealth <= 0) {
             Die();
+        } else {
+            soundManager.PlayEnemyDamageSound();
         }
     }
 
     private void Die() {
+        soundManager.PlayEnemyDeathSound();
+
         if (collectableHealth != null) {
             for (int i = 0; i < numHitReceived; i++) {
                 Vector3 spawnPosition = transform.position;

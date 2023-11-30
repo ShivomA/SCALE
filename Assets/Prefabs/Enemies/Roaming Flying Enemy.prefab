@@ -185,14 +185,17 @@ MonoBehaviour:
   maxSpeed: 1.5
   moveForce: 2
   verticalMoveForce: 10
+  retreatingMaxSpeed: 6
+  retreatingMoveForce: 6
   topBoundary: 0
   leftBoundary: 0
   rightBoundary: 0
   bottomBoundary: 0
   damageColor: {r: 1, g: 0, b: 0, a: 1}
-  damageVisualEffectTime: 2
+  damageVisualEffectTime: 1.5
   player: {fileID: 0}
   collectableHealth: {fileID: 7763720707685568750, guid: c0ce2a38a69d74729a0ab98e4a1a462b, type: 3}
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  soundManager: {fileID: 0}

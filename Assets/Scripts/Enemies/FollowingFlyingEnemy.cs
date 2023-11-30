@@ -15,7 +15,8 @@ public class FollowingFlyingEnemy : MonoBehaviour {
     public float normalMoveForceY = 10.0f;
     public float followingMaxSpeedX = 4.0f;
     public float followingMaxSpeedY = 3.0f;
-    public float retreatingMoveForce = 4.0f;
+    public float retreatingMaxSpeed = 6.0f;
+    public float retreatingMoveForce = 2.0f;
     public float followingMoveForceX = 10.0f;
     public float followingMoveForceY = 10.0f;
 
@@ -26,6 +27,7 @@ public class FollowingFlyingEnemy : MonoBehaviour {
     public Color damageColor = Color.red;
     public float damageVisualEffectTime = 2.0f;
 
+    private bool isAttacked;
     private float enemyWidth;
     private float enemyHeight;
     private int collissionRayCount = 5;
@@ -45,9 +47,14 @@ public class FollowingFlyingEnemy : MonoBehaviour {
     public GameObject collectableHealth;
     public LayerMask playerLayer;
 
+    public SoundManager soundManager;
+
     private void Start() {
         if (player == null)
             player = FindObjectOfType<Player>();
+
+        if (soundManager == null)
+            soundManager = FindObjectOfType<SoundManager>();
 
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -106,7 +113,9 @@ public class FollowingFlyingEnemy : MonoBehaviour {
             }
 
             rb.AddForce(new Vector2(forceDirection.x * followingMoveForceX, forceDirection.y * followingMoveForceY));
-            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
+
+            if (!isAttacked)
+                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
                 Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
         } else {
             bool outOfBoundary = false;
@@ -185,22 +194,29 @@ public class FollowingFlyingEnemy : MonoBehaviour {
                         numHitReceived += 1;
                         TakeDamage((int)player.damagePower);
                         damageVisualEffectImpactTime = damageVisualEffectTime;
-
-                        Vector2 retreatingForce;
-                        float retreatingForceMagnitude = playerTransform.position.x - transform.position.x;
-                        float retreatingForceDirection = -Mathf.Sign(playerTransform.position.x - transform.position.x);
-
-                        retreatingForce.x = retreatingForceDirection * (8 * retreatingMoveForce - retreatingMoveForce * retreatingForceMagnitude);
-
-                        rb.AddForce(new Vector2(retreatingForce.x * followingMoveForceX, 0), ForceMode2D.Impulse);
-                        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -followingMaxSpeedX, followingMaxSpeedX),
-                            Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
                     }
+
+                    isAttacked = true;
+                    Invoke(nameof(ResetIsAttacked), 0.5f);
+
+                    Vector2 retreatingForce;
+                    float retreatingForceMagnitude = playerTransform.position.x - transform.position.x;
+                    float retreatingForceDirection = -Mathf.Sign(playerTransform.position.x - transform.position.x);
+
+                    retreatingForce.x = retreatingForceDirection * (8 * retreatingMoveForce - retreatingMoveForce * retreatingForceMagnitude);
+
+                    rb.AddForce(new Vector2(retreatingForce.x * followingMoveForceX, 0), ForceMode2D.Impulse);
+                    rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -retreatingMaxSpeed, retreatingMaxSpeed),
+                        Mathf.Clamp(rb.velocity.y, -followingMaxSpeedY, followingMaxSpeedY));
                 } else {
                     player.TakeDamage(damage);
                 }
             }
         }
+    }
+
+    private void ResetIsAttacked() {
+        isAttacked = false;
     }
 
     private bool ShouldTakeDamage(Player player) {
@@ -225,10 +241,14 @@ public class FollowingFlyingEnemy : MonoBehaviour {
 
         if (currentHealth <= 0) {
             Die();
+        } else {
+            soundManager.PlayEnemyDamageSound();
         }
     }
 
     private void Die() {
+        soundManager.PlayEnemyDeathSound();
+
         if (collectableHealth != null) {
             for (int i = 0; i < numHitReceived; i++) {
                 Vector3 spawnPosition = transform.position;

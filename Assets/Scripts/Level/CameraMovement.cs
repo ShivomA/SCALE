@@ -10,6 +10,7 @@ public class CameraMovement : MonoBehaviour {
     public float playerOffsetX = 6;
     public float playerOffsetY = 8;
     public float cameraControlSpeed = 15;
+    public float cameraBackMovementFactor = 3;
 
     public float minYPos = 6;
     public float minXPos = 13f;
@@ -95,8 +96,8 @@ public class CameraMovement : MonoBehaviour {
             transform.position = desiredPosition;
         } else {
             if (movingRight) {
-                int multiplyingFactor = 1;
-                if (playerTransform.position.x > transform.position.x - playerOffsetX - extraView) { multiplyingFactor = 2; }
+                float multiplyingFactor = 1;
+                if (playerTransform.position.x > transform.position.x - playerOffsetX - extraView) { multiplyingFactor = cameraBackMovementFactor; }
 
                 float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
                 if (xPos > playerTransform.position.x + playerOffsetX + extraView) {
@@ -107,8 +108,8 @@ public class CameraMovement : MonoBehaviour {
                 Vector3 desiredPosition = new(xPos, yPos, transform.position.z);
                 transform.position = desiredPosition;
             } else {
-                int multiplyingFactor = 1;
-                if (playerTransform.position.x < transform.position.x + playerOffsetX + extraView) { multiplyingFactor = 2; }
+                float multiplyingFactor = 1;
+                if (playerTransform.position.x < transform.position.x + playerOffsetX + extraView) { multiplyingFactor = cameraBackMovementFactor; }
 
                 float xPos = transform.position.x + multiplyingFactor * playerRb.velocity.x * Time.deltaTime;
                 if (xPos < playerTransform.position.x - playerOffsetX - extraView) {
