@@ -13,6 +13,7 @@ public class SoundManager : MonoBehaviour {
     public AudioClip enemyDeathSound;
     public AudioClip playerDeathSound;
     public AudioClip playerDeathByFallingSound;
+    public AudioClip healthCollectionSound;
     public AudioClip levelCompletionSound;
 
     private AudioSource audioSource;
@@ -123,6 +124,14 @@ public class SoundManager : MonoBehaviour {
         if (isSoundEffectOn) {
             if (playerDeathByFallingSound != null) {
                 audioSource.PlayOneShot(playerDeathByFallingSound);
+            }
+        }
+    }
+
+    public void PlayHealthCollectionSound() {
+        if (isSoundEffectOn) {
+            if (healthCollectionSound != null) {
+                audioSource.PlayOneShot(healthCollectionSound);
             }
         }
     }

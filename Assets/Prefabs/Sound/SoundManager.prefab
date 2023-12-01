@@ -54,6 +54,7 @@ MonoBehaviour:
   enemyDeathSound: {fileID: 8300000, guid: e0dbfc84104434decafcb2ccb767ca41, type: 3}
   playerDeathSound: {fileID: 8300000, guid: 01a35cd692c404c92959c323d77e7f98, type: 3}
   playerDeathByFallingSound: {fileID: 8300000, guid: 4ca46f57b49f74393b784294fdc5089e, type: 3}
+  healthCollectionSound: {fileID: 8300000, guid: 2264d836884f04986b711c5daadac8a5, type: 3}
   levelCompletionSound: {fileID: 8300000, guid: 8e5e28b08669e4c6f88cf7a3a59c4997, type: 3}
 --- !u!82 &278950776363837944
 AudioSource:

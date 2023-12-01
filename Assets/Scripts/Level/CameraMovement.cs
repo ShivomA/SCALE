@@ -6,8 +6,8 @@ public class CameraMovement : MonoBehaviour {
     public Transform playerTransform;
     public Rigidbody2D playerRb;
 
-    public float maxExtraView = 5;
-    public float playerOffsetX = 6;
+    public float maxExtraView = 6;
+    public float playerOffsetX = 3;
     public float playerOffsetY = 8;
     public float cameraControlSpeed = 15;
     public float cameraBackMovementFactor = 3;
@@ -28,7 +28,7 @@ public class CameraMovement : MonoBehaviour {
 
     private float sizeX;
     private float boundSizeX;
-    private float extraView = 0;
+    private float extraView = 2;
 
     private void Start() {
         if (playerTransform == null) { playerTransform = FindObjectOfType<Player>().transform; }
