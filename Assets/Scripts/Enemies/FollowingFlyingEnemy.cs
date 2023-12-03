@@ -11,6 +11,7 @@ public class FollowingFlyingEnemy : MonoBehaviour {
     public float detectionRange = 16f;
     public float normalMaxSpeedX = 2.0f;
     public float normalMaxSpeedY = 1.0f;
+    public float retreatingHeight = 3.0f;
     public float normalMoveForceX = 10.0f;
     public float normalMoveForceY = 10.0f;
     public float followingMaxSpeedX = 4.0f;
@@ -103,10 +104,9 @@ public class FollowingFlyingEnemy : MonoBehaviour {
             Vector2 forceDirection;
             if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 5) {
                 forceDirection = (playerTransform.position - transform.position).normalized;
-                if (playerTransform.position.y - transform.position.y > 2.25) {
-                    float retreatingForceMagnitude = playerTransform.position.x - transform.position.x;
+                if (playerTransform.position.y - transform.position.y > retreatingHeight) {
                     float retreatingForceDirection = -Mathf.Sign(playerTransform.position.x - transform.position.x);
-                    forceDirection.x = retreatingForceDirection * (4 * retreatingMoveForce - retreatingMoveForce * retreatingForceMagnitude);
+                    forceDirection.x = retreatingForceDirection * retreatingMoveForce;
                 }
             } else {
                 forceDirection = (playerTransform.position + Vector3.up - transform.position).normalized;

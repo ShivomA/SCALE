@@ -3,9 +3,9 @@ using UnityEngine;
 public class RoamingDefendingEnemy : MonoBehaviour {
     public int damage = 6;
     public int strength = 0;
-    public int maxHealth = 12;
+    public int maxHealth = 14;
 
-    public float maxDefendingStrength = 50;
+    public float maxDefendingStrength = 24;
 
     public float destroyedHealthPoints = 2f;
     public float destroyedHealthForceMagnitude = 5;
@@ -13,7 +13,7 @@ public class RoamingDefendingEnemy : MonoBehaviour {
     public float maxSpeed = 1.0f;
     public float moveForce = 5.0f;
     public float detectionRange = 6f;
-    public float defendCooldown = 1.2f;
+    public float defendCooldown = 1.5f;
     public float verticalDetectionRange = 5f;
 
     public float leftBoundary;

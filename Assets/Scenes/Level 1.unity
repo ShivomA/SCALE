@@ -3669,11 +3669,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 720309339492184130, guid: e317dabb853364ad7a521a4051b9d0e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 241
+      value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 720309339492184130, guid: e317dabb853364ad7a521a4051b9d0e0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 720309339492184130, guid: e317dabb853364ad7a521a4051b9d0e0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3709,7 +3709,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5902785619531823591, guid: e317dabb853364ad7a521a4051b9d0e0, type: 3}
       propertyPath: m_Name
-      value: 241
+      value: 240
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4547,7 +4547,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 720309339492184130, guid: e317dabb853364ad7a521a4051b9d0e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 239
+      value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 720309339492184130, guid: e317dabb853364ad7a521a4051b9d0e0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4587,7 +4587,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5902785619531823591, guid: e317dabb853364ad7a521a4051b9d0e0, type: 3}
       propertyPath: m_Name
-      value: 239
+      value: 240
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5264,6 +5264,11 @@ Transform:
   - {fileID: 1398475505}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1507713409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 665512147802959538, guid: 0897561c8adb04e489325214c102d9a6, type: 3}
+  m_PrefabInstance: {fileID: 1684666819}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1534435384 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 304948630258062456, guid: 915ca093e2c6f469dbdbe30d470016db, type: 3}
@@ -5326,7 +5331,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Kill All Enemies
+  m_text: Kill Last Enemy
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5721,14 +5726,6 @@ PrefabInstance:
     - target: {fileID: 665512147802959538, guid: 0897561c8adb04e489325214c102d9a6, type: 3}
       propertyPath: m_Name
       value: 470
-      objectReference: {fileID: 0}
-    - target: {fileID: 6549072973152315582, guid: 0897561c8adb04e489325214c102d9a6, type: 3}
-      propertyPath: leftBoundary
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6549072973152315582, guid: 0897561c8adb04e489325214c102d9a6, type: 3}
-      propertyPath: rightBoundary
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6549072973152315582, guid: 0897561c8adb04e489325214c102d9a6, type: 3}
       propertyPath: dangerBoundaryLeft
@@ -7772,6 +7769,14 @@ PrefabInstance:
       propertyPath: wonMenuPanel
       value: 
       objectReference: {fileID: 841317605}
+    - target: {fileID: 4915536633666258259, guid: 746bbbe68770e44f2aeced9692178330, type: 3}
+      propertyPath: enemies.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4915536633666258259, guid: 746bbbe68770e44f2aeced9692178330, type: 3}
+      propertyPath: enemies.Array.data[0]
+      value: 
+      objectReference: {fileID: 1507713409}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

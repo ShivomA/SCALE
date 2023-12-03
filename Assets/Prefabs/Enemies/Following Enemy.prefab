@@ -185,9 +185,10 @@ MonoBehaviour:
   detectionRange: 8
   normalMaxSpeed: 1
   normalMoveForce: 4
+  retreatingHeight: 3
   followingMaxSpeed: 3
   followingMoveForce: 8
-  retreatingMoveForce: 50
+  retreatingMoveForce: 10
   verticalDetectionRange: 6
   leftBoundary: 0
   rightBoundary: 0
@@ -201,3 +202,4 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  soundManager: {fileID: 0}

@@ -12,9 +12,11 @@ public class FollowingEnemy : MonoBehaviour {
     public float detectionRange = 8f;
     public float normalMaxSpeed = 1.0f;
     public float normalMoveForce = 4.0f;
+    public float retreatingHeight = 3.0f;
     public float followingMaxSpeed = 3.0f;
+    public float retreatingMaxSpeed = 2.0f;
     public float followingMoveForce = 8.0f;
-    public float retreatingMoveForce = 50.0f;
+    public float retreatingMoveForce = 10.0f;
     public float verticalDetectionRange = 6.0f;
 
     public float leftBoundary;
@@ -91,7 +93,7 @@ public class FollowingEnemy : MonoBehaviour {
         } else { sawPlayer = false; }
 
         if (sawPlayer) {
-            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 5 && playerTransform.position.y - transform.position.y > 1.5) {
+            if (Mathf.Abs(playerTransform.position.x - transform.position.x) < 5 && playerTransform.position.y - transform.position.y > retreatingHeight) {
                 Vector2 forceToApply = retreatingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.left;
                 if (dangerBoundaryLeft != dangerBoundaryRight) {
                     if (transform.position.x < dangerBoundaryLeft + 2 && forceToApply.x < 0) {
@@ -105,6 +107,7 @@ public class FollowingEnemy : MonoBehaviour {
                     }
                 }
                 rb.AddForce(forceToApply);
+                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -retreatingMaxSpeed, retreatingMaxSpeed), rb.velocity.y);
             } else {
                 Vector2 forceToApply = followingMoveForce * Mathf.Sign(playerTransform.position.x - transform.position.x) * Vector2.right;
                 if (dangerBoundaryLeft != dangerBoundaryRight) {

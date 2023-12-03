@@ -316,15 +316,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 6
   strength: 0
-  maxHealth: 12
-  maxDefendingStrength: 50
+  maxHealth: 14
+  maxDefendingStrength: 24
   destroyedHealthPoints: 2
   destroyedHealthForceMagnitude: 5
   maxSpeed: 1
   moveForce: 5
-  detectionRange: 7
-  defendCooldown: 1
-  verticalDetectionRange: 6
+  detectionRange: 6
+  defendCooldown: 1.5
+  verticalDetectionRange: 5
   leftBoundary: 0
   rightBoundary: 0
   damageColor: {r: 1, g: 0, b: 0, a: 1}
@@ -337,6 +337,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  soundManager: {fileID: 0}
 --- !u!1 &1904162890946850331
 GameObject:
   m_ObjectHideFlags: 0

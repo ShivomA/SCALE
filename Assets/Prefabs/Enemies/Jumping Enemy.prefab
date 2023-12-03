@@ -184,8 +184,8 @@ MonoBehaviour:
   destroyedHealthForceMagnitude: 5
   numAirJump: 2
   radius: 1.2
-  jumpForce: 10
-  jumpCooldown: 0.5
+  jumpForce: 8.5
+  jumpCooldown: 0.75
   normalMaxSpeed: 1.5
   detectionRange: 14
   airJumpCooldown: 1.2
@@ -210,3 +210,4 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1480
+  soundManager: {fileID: 0}

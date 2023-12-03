@@ -11,8 +11,8 @@ public class JumpingEnemy : MonoBehaviour {
 
     public int numAirJump = 2;
     public float radius = 1.2f;
-    public float jumpForce = 10.0f;
-    public float jumpCooldown = 0.5f;
+    public float jumpForce = 8.5f;
+    public float jumpCooldown = 0.75f;
     public float normalMaxSpeed = 1.5f;
     public float detectionRange = 14.0f;
     public float airJumpCooldown = 1.2f;

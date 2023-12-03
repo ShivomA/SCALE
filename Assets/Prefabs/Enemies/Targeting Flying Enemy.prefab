@@ -182,7 +182,7 @@ MonoBehaviour:
   maxHealth: 16
   destroyedHealthPoints: 3.5
   destroyedHealthForceMagnitude: 5
-  hitCooldown: 0.6
+  hitCooldown: 1
   detectionRange: 15
   attackCooldown: 1.2
   attackDuration: 2
@@ -192,9 +192,8 @@ MonoBehaviour:
   normalMoveForceY: 30
   decelerationForce: 10
   playerHeightOffset: 3
+  followingMaxSpeed: 20
   takePositionForce: 150
-  followingMaxSpeedX: 10
-  followingMaxSpeedY: 10
   followingMoveForceX: 30
   followingMoveForceY: 30
   topBoundary: 0
@@ -214,3 +213,4 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  soundManager: {fileID: 0}
